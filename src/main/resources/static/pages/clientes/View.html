@@ -11,66 +11,55 @@
 </head>
 <body class="body-create">
 <header class="header" id="menu"></header>
-<div class="wrapper-create">
-    <form action="/presentation/clientes/create" method="post">
-        <h1>Nuevo Cliente</h1>
-        <div class="input-box">
-            <input type="text" name="cedula" th:value="${clienteEdit.cedula}" placeholder="Identificacion" required>
+<div class="popup">
+    <div class="close-btn">&times;</div>
+    <div class="form">
+        <h2>Nuevo Producto</h2>
+        <div class="form-element">
+            <input type="text" name="cedula" placeholder="Identificacion" required>
             <i class='bx bx-id-card'></i>
         </div>
-        <div class="input-box">
-            <input type="text" name="nombre" th:value="${clienteEdit.nombre}" placeholder="Nombre" required>
+        <div class="form-element">
+            <input type="text" name="nombre" placeholder="Nombre" required>
             <i class='bx bxs-user' ></i>
         </div>
-        <div class="input-box">
-            <input type="email" name="correo" th:value="${clienteEdit.correo}" placeholder="Correo electronico" required>
+        <div class="form-element">
+            <input type="email" name="correo" placeholder="Correo electronico" required>
             <i class='bx bxl-gmail' ></i>
         </div>
-        <div class="input-box">
-            <input type="text" name="telefono" th:value="${clienteEdit.telefono}"placeholder="Telefono" required>
+        <div class="form-element">
+            <input type="text" name="telefono" placeholder="Telefono" required>
             <i class='bx bxs-phone'></i>
         </div>
-        <button type="submit" value="Guardar" class="btn">Guardar</button>
-        </form>
+        <div class="form-element">
+            <button id="guardarProductoBtn" class="invisible">Guardar</button>
+            <button id="editarProductoBtn" class="invisible">Editar</button>
+        </div>
+    </div>
 </div>
 
 <div class="wrapper-create">
-    <h2>CLIENTES DEL PROVEEDOR: <span th:text="${session.proveedor.nombre}"></span></h2>
-    <form action="/presentation/clientes/search" method="post">
-        <div class="input-search">
-            <p>Nombre del cliente: </p> <input type="text" name="nombre">
-            <button type="submit" class="btnSeach">Buscar</button>
-        </div>
-    </form>
+    <h2>CLIENTES DEL PROVEEDOR:<span id="proveedor"></span></h2>
+    <div class="input-search">
+        <p>Nombre: </p> <input type="text" name="nombre" id="busqueda">
+        <button id="btnBuscar">Buscar</button>
+        <button id="btnCreate">Create</button>
+    </div>
     <div class="table-wrapper">
-    <table class="content-table">
-        <thead>
-        <tr>
-            <th>Cedula</th>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>Telefono</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cliente : ${clientes}">
-            <td th:text="${cliente.cedula}"></td>
-            <td th:text="${cliente.nombre}"></td>
-            <td th:text="${cliente.correo}"></td>
-            <td th:text="${cliente.telefono}"></td>
-            <td>
-                <form action="/presentation/clientes/delete" method="post">
-                    <input type="hidden" name="cedula" th:value="${cliente.cedula}">
-                    <input type="image" src="/images/eliminar.png" alt="Editar" class="btnAction" style="width: 50px; height: 50px;">
-                </form>
-                <form action="/presentation/clientes/edit" method="post">
-                    <input type="hidden" name="cedula" th:value="${cliente.cedula}">
-                    <input type="image" src="/images/editBtn.png" alt="Editar" class="btnAction" style="width: 50px; height: 50px;">
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <table id="listaClientes" class="content-table">
+            <thead>
+            <tr>
+                <th>Cedula</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Telefono</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>
