@@ -10,7 +10,7 @@
 </head>
 <body class="body-create">
 <header class="header" id="menu"></header>
-<div class="wrapper-create">
+<div class="wrapper-facturas">
     <table class="content-table">
         <thead>
         <tr>
@@ -18,28 +18,11 @@
             <th>Cantidad de Productos</th>
             <th>Monto Total</th>
             <th>Fecha</th>
+            <th>Detalle</th>
+            <th>Menu</th>
         </tr>
         </thead>
-
         <tbody>
-        <tr th:each="factura : ${facturas}">
-            <td th:text="${factura.numero}"></td>
-            <td th:text="${factura.cantidad}"></td>
-            <td th:text="${factura.monto}"></td>
-            <td th:text="${factura.fecha}"></td>
-            <td>
-                <form action="/presentation/detalle/pdf" method="post" target="_blank">
-                    <input type="hidden" name="numero" th:value="${factura.numero}">
-                    <button type="submit" value="Detalle" class="btnAction">Detalle</button>
-                </form>
-            </td>
-            <td>
-                <form action="/presentation/detalle/xml" method="post" target="_blank">
-                    <input type="hidden" name="numero" th:value="${factura.numero}">
-                    <button type="submit" class="btnAction">XML</button>
-                </form>
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>
