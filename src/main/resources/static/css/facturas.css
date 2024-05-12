@@ -1,0 +1,21 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+.cuerpo{
+
+}
+.facturas-box{
+    text-align: center;
+
+}
+.titulo{
+    text-align: center;
+}
+.titulo h2{
+    font-size: 20px;
+    font-weight: bold;
+}
+.informacion{
+    text-align: left;
+}

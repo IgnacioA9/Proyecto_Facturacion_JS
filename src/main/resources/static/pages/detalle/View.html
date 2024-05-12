@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DETALLE</title>
+
+    <style>
+        .cliente-asociado div{
+            text-align: center;
+            display: inline-block;
+        }
+        .cliente-asociado div p{
+            padding-right: 5px;
+            display: inline-block;
+        }
+        .tittle{
+            display: block;
+        }
+        table{
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+<header th:replace="~{fragments/header :: header}"></header>
+<hr>
+<div style="border: 2px solid black">
+    <div class="box">
+        <div class="tabla">
+            <h2 style="text-align: center">Detalle de la factura</h2>
+            <table border="1">
+                <caption>FACTURA</caption>
+                <thead>
+                <tr>
+                    <th>Numero de Factura</th>
+                    <th>Cantidad de Productos</th>
+                    <th>Monto Total</th>
+                    <th>Fecha</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--<tr th:each="factura : ${factura}">-->
+                    <td th:text="${factura.numero}"></td>
+                    <td th:text="${factura.cantidad}"></td>
+                    <td th:text="${factura.monto}"></td>
+                    <td th:text="${factura.fecha}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="cliente-asociado">
+                <div class="tittle"><p><strong>CLIENTE ASOCIADO</strong></p></div>
+                <div style="display: inline-block">
+                    <p><strong>Cedula: </strong></p><p th:text="${cliente.cedula}"></p>
+                </div>
+                <div>
+                    <p><strong>Nombre: </strong></p><p th:text="${cliente.nombre}"></p>
+                </div>
+                <div>
+                    <p><strong>Correo: </strong></p><p th:text="${cliente.correo}"></p>
+                </div>
+                <div>
+                    <p><strong>Telefono: </strong></p><p th:text="${cliente.telefono}"></p>
+                </div>
+            </div>
+            <table border="1">
+                <caption>PRODUCTOS</caption>
+                <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="producto : ${detalles}">
+                    <td th:text="${producto.codigo}"></td>
+                    <td th:text="${producto.nombre}"></td>
+                    <td th:text="${producto.precio}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

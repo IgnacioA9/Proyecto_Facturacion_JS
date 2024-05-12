@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UFT-8">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="/css/Style.css">
+    <link rel="stylesheet" href="/css/Create.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/js/menu.js"> </script>
+    <script src="controller.js"> </script>
+</head>
+<body class="body-create">
+<header class="header" id="menu"></header>
+<div class="wrapper-create">
+    <form action="/presentation/clientes/create" method="post">
+        <h1>Nuevo Cliente</h1>
+        <div class="input-box">
+            <input type="text" name="cedula" th:value="${clienteEdit.cedula}" placeholder="Identificacion" required>
+            <i class='bx bx-id-card'></i>
+        </div>
+        <div class="input-box">
+            <input type="text" name="nombre" th:value="${clienteEdit.nombre}" placeholder="Nombre" required>
+            <i class='bx bxs-user' ></i>
+        </div>
+        <div class="input-box">
+            <input type="email" name="correo" th:value="${clienteEdit.correo}" placeholder="Correo electronico" required>
+            <i class='bx bxl-gmail' ></i>
+        </div>
+        <div class="input-box">
+            <input type="text" name="telefono" th:value="${clienteEdit.telefono}"placeholder="Telefono" required>
+            <i class='bx bxs-phone'></i>
+        </div>
+        <button type="submit" value="Guardar" class="btn">Guardar</button>
+        </form>
+</div>
+
+<div class="wrapper-create">
+    <h2>CLIENTES DEL PROVEEDOR: <span th:text="${session.proveedor.nombre}"></span></h2>
+    <form action="/presentation/clientes/search" method="post">
+        <div class="input-search">
+            <p>Nombre del cliente: </p> <input type="text" name="nombre">
+            <button type="submit" class="btnSeach">Buscar</button>
+        </div>
+    </form>
+    <div class="table-wrapper">
+    <table class="content-table">
+        <thead>
+        <tr>
+            <th>Cedula</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="cliente : ${clientes}">
+            <td th:text="${cliente.cedula}"></td>
+            <td th:text="${cliente.nombre}"></td>
+            <td th:text="${cliente.correo}"></td>
+            <td th:text="${cliente.telefono}"></td>
+            <td>
+                <form action="/presentation/clientes/delete" method="post">
+                    <input type="hidden" name="cedula" th:value="${cliente.cedula}">
+                    <input type="image" src="/images/eliminar.png" alt="Editar" class="btnAction" style="width: 50px; height: 50px;">
+                </form>
+                <form action="/presentation/clientes/edit" method="post">
+                    <input type="hidden" name="cedula" th:value="${cliente.cedula}">
+                    <input type="image" src="/images/editBtn.png" alt="Editar" class="btnAction" style="width: 50px; height: 50px;">
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+</body>
+</html>

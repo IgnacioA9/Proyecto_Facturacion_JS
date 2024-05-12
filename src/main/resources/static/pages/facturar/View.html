@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Facturar</title>
+    <link rel="stylesheet" href="/css/Style.css">
+    <link rel="stylesheet" href="/css/Facturar.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/js/menu.js"> </script>
+    <script src="controller.js"> </script>
+</head>
+<body class="body-facturar">
+<header class="header" id="menu"></header>
+<div class="wrapper-facturar">
+    <h1>Facturar</h1>
+    <div class="input-box">
+        <div class="input-container">
+            <label for="proveedor">Proveedor: </label>
+            <span id="proveedor"></span>
+        </div>
+        <div class="input-container">
+            <form action="/presentation/facturar/buscarCliente" method="post">
+                <label for="cliente">Cliente: </label>
+                <span th:text="${clienteVenta.nombre}"></span>
+                <input type="text" name="cedula" id="cliente" placeholder="ID" required>
+                <button class="btnSmall"></button>
+
+            </form>
+            <a href="/presentation/clientes/show">
+                <img src="/images/list.png" alt="Descripción de la imagen">
+            </a>
+        </div>
+        <br>
+        <div class="input-container">
+            <form action="/presentation/facturar/buscarProducto" method="post">
+                <label for="producto">Codigo: </label>
+                <input type="text" name="codigo" id="producto" placeholder="Codigo" required>
+                    <button class="btnSmall"></button>
+            </form>
+            <a href="/presentation/productos/show">
+                <img src="/images/list.png" alt="Descripción de la imagen">
+            </a>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="content-table">
+            <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productos}">
+                <td th:text="${producto.codigo}"></td>
+                <td th:text="${producto.nombre}"></td>
+                <td th:text="${producto.precio}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="result-wrapper">
+        <h3>Costo Total: </h3><p th:text="${session.valorFactura}"></p>
+    </div>
+    <form action="/presentation/facturar/guardarFactura" method="post">
+        <button type="submit" class="btn">Guardar Factura</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UFT-8">
+    <title>Productos</title>
+    <link rel="stylesheet" href="/css/Style.css">
+    <link rel="stylesheet" href="/css/Create.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/js/menu.js"> </script>
+    <script src="controller.js"> </script>
+</head>
+<body class="body-create">
+<header class="header" id="menu"></header>
+<div class="popup">
+    <div class="close-btn">&times;</div>
+    <div class="form">
+        <h2>Nuevo Producto</h2>
+        <div class="form-element">
+            <i class='bx bx-id-card'></i>
+            <input type="text" id="codigo" placeholder="Codigo" required>
+        </div>
+        <div class="form-element">
+            <i class='bx bxs-user' ></i>
+            <input type="text" id="nombre" placeholder="Nombre" required>
+        </div>
+        <div class="form-element">
+            <i class='bx bxs-cart-add' ></i>
+            <input type="text" id="precio" placeholder="Precio" required>
+        </div>
+        <div class="form-element">
+            <button id="guardarProductoBtn" class="invisible">Guardar</button>
+            <button id="editarProductoBtn" class="invisible">Editar</button>
+        </div>
+    </div>
+</div>
+
+<div class="wrapper-create">
+    <h2>PRODUCTOS DEL PROVEEDOR:<span id="proveedor"></span></h2>
+    <div class="input-search">
+        <p>Nombre: </p> <input type="text" name="nombre" id="busqueda">
+        <button id="btnBuscar">Buscar</button>
+        <button id="btnCreate">Create</button>
+    </div>
+    <div class="table-wrapper">
+        <table id="listaProductos" class="content-table">
+            <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
