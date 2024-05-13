@@ -43,13 +43,18 @@ function showForm() {
     popup.classList.add("active");
 }
 
+function NoshowForm() {
+    const popup = document.querySelector(".popup");
+    popup.classList.remove("active");
+}
+
 function fetchAndList(){
     const request = new Request(api, {method: 'GET', headers: { }});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         state.list = await response.json();
-        render_list();
+        render_list_item();
     })();
 }
 
@@ -64,49 +69,53 @@ function render_list(){
     state.list.forEach(item => render_list_item(item, tbody));
 }
 
-function render_list_item(item, tbody){
-    var row = document.createElement('tr');
+function render_list_item(){
+    var lista = document.getElementById('listaProductos');
+    var tbody = lista.getElementsByTagName('tbody')[0];
 
-    var codigoCell = document.createElement('td');
-    codigoCell.textContent = item.codigo;
+    state.list.forEach(function (item){
+        var row = document.createElement('tr');
 
-    var nombreCell = document.createElement('td');
-    nombreCell.textContent = item.nombre;
+        var codigoCell = document.createElement('td');
+        codigoCell.textContent = item.codigo;
 
-    var precioCell = document.createElement('td');
-    precioCell.textContent = item.precio;
+        var nombreCell = document.createElement('td');
+        nombreCell.textContent = item.nombre;
 
-    var deleteCell = document.createElement('td');
-    var deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Eliminar';
-    deleteButton.classList.add("btnAction");
-    deleteButton.addEventListener('click', function () {
-        row.remove();
+        var precioCell = document.createElement('td');
+        precioCell.textContent = item.precio;
+
+        var deleteCell = document.createElement('td');
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Eliminar';
+        deleteButton.classList.add("btnAction");
+        deleteButton.addEventListener('click', function() {
+            remove(item.codigo);
+        });
+        deleteCell.appendChild(deleteButton);
+
+        var editCell = document.createElement('td');
+        var editButton = document.createElement('button');
+        editButton.textContent = "Editar";
+        editButton.classList.add("btnAction");
+        editButton.addEventListener('click', function() {
+            var fila = this.parentNode.parentNode;
+            llenarCampos(fila);
+            showForm();
+            ocultarBotonGuardar();
+            mostrarBotonEditar();
+        });
+        editCell.appendChild(editButton);
+
+        row.appendChild(codigoCell);
+        row.appendChild(nombreCell);
+        row.appendChild(precioCell);
+        row.appendChild(editCell);
+        row.appendChild(deleteCell);
+
+        // Agregar la fila a tbody
+        tbody.appendChild(row);
     });
-    deleteCell.appendChild(deleteButton);
-
-    var editCell = document.createElement('td');
-    var editButton = document.createElement('button');
-    editButton.textContent = "Editar";
-    editButton.classList.add("btnAction");
-    editButton.addEventListener('click', function() {
-        var fila = this.parentNode.parentNode;
-        llenarCampos(fila);
-        load_item();
-        showForm();
-        ocultarBotonGuardar();
-        mostrarBotonEditar();
-    });
-    editCell.appendChild(editButton);
-
-    row.appendChild(codigoCell);
-    row.appendChild(nombreCell);
-    row.appendChild(precioCell);
-    row.appendChild(editCell);
-    row.appendChild(deleteCell);
-
-    // Agregar la fila a tbody
-    tbody.appendChild(row);
 }
 
 
@@ -118,7 +127,7 @@ function search(){
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         state.list = await response.json();
-        render_list();
+        render_list_item();
     })();
 }
 
@@ -160,10 +169,6 @@ function load_item(){
         nombre:document.getElementById("nombre").value,
         precio: document.getElementById("precio").value
     };
-    console.log("Valores del objeto state.item:");
-    console.log("Código:", state.item.codigo);
-    console.log("Nombre:", state.item.nombre);
-    console.log("Precio:", state.item.precio);
 }
 
 function validate_item(){
@@ -198,19 +203,24 @@ function add(){
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
+        NoshowForm();
         fetchAndList();
+        console.log("Contenido de la lista:");
+        console.log(state.list);
     })();
 }
 
-function edit(id){
-    let request = new Request(backend+`/productos/${id}`,
-        {method: 'GET', headers: {}});
+function edit(){
+    load_item();
+    if(!validate_item()) return;
+    let request = new Request(api+`/edit`, {method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(state.item)});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
-        state.item = await response.json();
-        state.mode="EDIT";
-        //render_item();
+        NoshowForm();
+        fetchAndList();
     })();
 }
 

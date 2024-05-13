@@ -59,12 +59,19 @@ public class productos {
 
                 service.almacenacreate(almacena);
             }
-            else{
-                buscarProducto.setPrecio(producto.getPrecio());
-                buscarProducto.setNombre(producto.getNombre());
-                buscarProducto.setCodigo(producto.getCodigo());
-                service.productoscreate(buscarProducto);
-            }
+        }catch (Exception ex){
+            throw  new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+    }
+
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Productos producto){
+        try{
+            Productos buscarProducto = service.buscarProducto(producto.getCodigo());
+            buscarProducto.setPrecio(producto.getPrecio());
+            buscarProducto.setNombre(producto.getNombre());
+            buscarProducto.setCodigo(producto.getCodigo());
+            service.productoscreate(buscarProducto);
         }catch (Exception ex){
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }

@@ -69,6 +69,19 @@ public class clientes {
         }
     }
 
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Clientes cliente){
+        try{
+            Clientes clientesread = service.clientesread(cliente.getCedula());
+            clientesread.setCorreo(cliente.getCorreo());
+            clientesread.setNombre(cliente.getNombre());
+            clientesread.setTelefono(cliente.getTelefono());
+            service.clientescreate(clientesread);
+        }catch (Exception ex){
+            throw  new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+    }
+
     @DeleteMapping("/{cedula}")
     public void delete(@PathVariable String cedula){
         try{

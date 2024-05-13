@@ -43,7 +43,7 @@ public class ProyectoFacturacionApplication {
                         .requestMatchers("/api/login/login").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
                         .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("ADM")
-                        .requestMatchers("/api/**").hasAnyAuthority("ADM","CLI")
+                        .requestMatchers("/api/**").hasAnyAuthority("ADM","PROVEE")
                         .requestMatchers("/**").permitAll()
                 )
                 .exceptionHandling(customizer -> customizer
