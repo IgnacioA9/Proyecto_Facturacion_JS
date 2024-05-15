@@ -11,22 +11,30 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
+import una.ac.cr.logic.Usuarios;
 
 @SpringBootApplication
 public class ProyectoFacturacionApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ProyectoFacturacionApplication.class, args);
+        Usuarios usuario = Usuarios.builder()
+                .identificacion("")
+                .contrasena("")
+                .rol("")
+                .build();
+
     }
 
-    /*@Bean("securityFilterChain")
+    /*@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         var chain = http
                 .authorizeHttpRequests(customizer -> customizer
+                        .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/login").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/**").hasAnyAuthority("ADMIN","PROVEE")
+                        .requestMatchers(HttpMethod.POST, "/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/**").hasAnyAuthority("ADMIN", "PROVEE")
                         .requestMatchers("/**").permitAll()
                 )
                 .exceptionHandling(customizer -> customizer
@@ -36,14 +44,17 @@ public class ProyectoFacturacionApplication {
         return chain;
     }*/
 
+
     @Bean("securityFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         var chain = http
                 .authorizeHttpRequests(customizer -> customizer
+                        .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/login").permitAll()
+                        .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("ADM")
-                        .requestMatchers("/api/**").hasAnyAuthority("ADM","PROVEE")
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/**").hasAnyAuthority("ADMIN","PROVEE")
                         .requestMatchers("/**").permitAll()
                 )
                 .exceptionHandling(customizer -> customizer

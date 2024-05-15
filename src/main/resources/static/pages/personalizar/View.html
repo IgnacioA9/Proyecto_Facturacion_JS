@@ -11,65 +11,8 @@
 </head>
 <body class="body-loggin">
 <header class="header" id="menu"></header>
-    <div class="wrapperPersonalizar">
-        <th:block th:if="${session.usuario.getRol()=='PROVEE'}">
-            <h2>Personalizar Perfil</h2>
-            <form action="/presentation/proveedores/edit" method="post">
-                <div class="input-personalizar">
-                    <p>Nombre: </p>
-                    <input type="text" name="nombre" th:value="${current.nombre}">
-                    <i class='bx bxs-face'></i>
-                    <br>
-                </div>
-                <div class="input-personalizar">
-                    <p>Correo: </p><input type="text" name="correo" th:value="${current.correo}">
-                    <i class='bx bxs-envelope' ></i>
-                    <br>
-                </div>
-                <div class="input-personalizar">
-                    <p>Telefono: </p><input type="text" name="telefono" th:value="${current.telefono}">
-                    <i class='bx bxs-phone'></i>
-                </div>
-                <button type="submit" value="Guardar" class="btn">Guardar</button>
-            </form>
-        </th:block>
-        <th:block th:if="${session.usuario.getRol()=='ADMIN'}">
-            <h2>Personalizar Perfil</h2>
-            <form action="/presentation/administradores/edit" method="post">
-                <div class="input-personalizar">
-                    <p>Nombre: </p><input type="text" name="nombre" th:value="${current.nombre}">
-                </div>
-                <button type="submit" value="Guardar" class="btn">Guardar</button>
-            </form>
-        </th:block>
-    </div>
+<div class="wrapperPersonalizar" id="personalizarDiv"></div>
+<div class="wrapperPersonalizar" id="personalizarDiv2"></div>
 
-
-<div class="wrapperPersonalizar">
-    <th:block th:if="${session.usuario.getRol()=='PROVEE'}">
-        <h2>Perfil Actual</h2>
-            <div class="input-personalizar">
-                <p>Nombre: </p>
-                <input type="text" name="nombre" th:value="${current.nombre}">
-                <i class='bx bxs-face'></i>
-                <br>
-            </div>
-            <div class="input-personalizar">
-                <p>Correo: </p><input type="text" name="correo" th:value="${current.correo}">
-                <i class='bx bxs-envelope' ></i>
-                <br>
-            </div>
-            <div class="input-personalizar">
-                <p>Telefono: </p><input type="text" name="telefono" th:value="${current.telefono}">
-                <i class='bx bxs-phone'></i>
-            </div>
-    </th:block>
-    <th:block th:if="${session.usuario.getRol()=='ADMIN'}">
-        <h2>Personalizar Perfil</h2>
-            <div class="input-personalizar">
-                <p>Nombre: </p><input type="text" name="nombre" th:value="${current.nombre}">
-            </div>
-    </th:block>
-</div>
 </body>
 </html>

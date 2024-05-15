@@ -58,7 +58,6 @@ import java.util.List;
     public boolean isEnabled() {
         return true;
     }
-
 }*/
 
 public class UserDetailsImp implements UserDetails {

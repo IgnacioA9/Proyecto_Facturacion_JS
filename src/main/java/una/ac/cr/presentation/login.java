@@ -28,7 +28,7 @@ public class login {
         }
         Authentication auth = (Authentication) request.getUserPrincipal();
         Usuarios user = ((UserDetailsImp) auth.getPrincipal()).getUser();
-        return new Usuarios(user.getIdentificacion(), null, user.getRol());
+        return Usuarios.builder().identificacion(user.getIdentificacion()).contrasena(null).rol(user.getRol()).build();
     }
 
     @PostMapping("/logout")
@@ -41,7 +41,7 @@ public class login {
 
     @GetMapping("/current-user")
     public Usuarios getCurrentUser(@AuthenticationPrincipal UserDetailsImp user) {
-        return new Usuarios(user.getUser().getIdentificacion(), null, user.getUser().getRol());
+        return Usuarios.builder().identificacion(user.getUsername()).contrasena(null).rol(user.getUser().getRol()).build();
     }
 }*/
 
@@ -49,7 +49,7 @@ public class login {
 @RequestMapping("/api/login")
 public class login {
     @PostMapping("/login")
-    public User login(@RequestBody User form, HttpServletRequest request) {
+    public User login(@RequestBody User form,  HttpServletRequest request) {
         try {
             request.login(form.getId(), form.getPassword());
         } catch (ServletException e) {

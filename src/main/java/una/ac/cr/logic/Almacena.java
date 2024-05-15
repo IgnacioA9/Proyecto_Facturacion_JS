@@ -6,7 +6,6 @@ import java.util.Objects;
 
 @Entity
 public class Almacena {
-
     @Id
     @Column(name = "numeroprod")
     private int numeroprod;

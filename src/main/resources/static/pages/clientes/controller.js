@@ -15,12 +15,14 @@ async function loaded(event) {
         return;
     }
     */
+
     // Obtener referencia al botón btnCreate y al popup
     const btnCreate = document.getElementById("btnCreate");
     const popup = document.querySelector(".popup");
     const closeBtn = document.querySelector(".close-btn");
     const saveBtn = document.getElementById("guardarProductoBtn");
     const editBtn = document.getElementById("editarProductoBtn");
+    const searchBtn = document.getElementById("btnBuscar");
 
     // Agregar evento click al boton btnCreate
     btnCreate.addEventListener("click",ask);
@@ -34,6 +36,8 @@ async function loaded(event) {
     saveBtn.addEventListener("click",add);
     // Funcion para editar producto cuando se hace click en el boton editar
     editBtn.addEventListener("click", () => edit(state.item.codigo));
+    // Funcion para buscar producto cuando se hace click en el boton buscar
+    searchBtn.addEventListener("click",search);
 
     fetchAndList();
 }
@@ -53,23 +57,44 @@ function fetchAndList(){
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
-        state.list = await response.json();
-        render_list_item();
+        const data = await response.json();
+        console.log(data); // Verificar la respuesta
+        state.list = data;
+        render_list();
+        console.log(state.list);
     })();
 }
 
 function render_list(){
-    var lista = document.getElementById('listaProductos');
-    var tbody = lista.getElementsByTagName('tbody')[0];
-
-    // Limpiar la lista antes de renderizarla nuevamente
-    tbody.innerHTML = "";
-
-    // Iterar sobre cada elemento en state.list y llamar a render_list_item
-    state.list.forEach(item => render_list_item(item, tbody));
+    var listado = document.querySelector('#listaClientes tbody');
+    listado.innerHTML = "";
+    state.list.forEach(item => render_list_item(listado, item));
 }
 
-function render_list_item(){
+function render_list_item(listado, item){
+    var tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td>${item.cedula}</td>
+        <td>${item.nombre}</td>
+        <td>${item.correo}</td>
+        <td>${item.telefono}</td>
+        <td class='edit'><img src='/images/edit.png'></td>
+        <td class='delete'><img src='/images/delete.png'></td>`;
+
+    tr.querySelector(".edit").addEventListener('click', function() {
+        var fila = this.parentNode;
+        llenarCampos(fila);
+        showForm();
+        ocultarBotonGuardar();
+        mostrarBotonEditar();
+    });
+
+    tr.querySelector(".delete").addEventListener("click", () => { remove(item.cedula); });
+    listado.append(tr);
+}
+
+
+/*function render_list_item(lista,tbody){
     var lista = document.getElementById('listaClientes');
     var tbody = lista.getElementsByTagName('tbody')[0];
 
@@ -120,7 +145,7 @@ function render_list_item(){
         // Agregar la fila a tbody
         tbody.appendChild(row);
     });
-}
+}*/
 
 
 function search(){
@@ -131,7 +156,7 @@ function search(){
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         state.list = await response.json();
-        render_list_item();
+        render_list();
     })();
 }
 

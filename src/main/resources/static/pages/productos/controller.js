@@ -15,12 +15,14 @@ async function loaded(event) {
         return;
     }
     */
+
     // Obtener referencia al botón btnCreate y al popup
     const btnCreate = document.getElementById("btnCreate");
     const popup = document.querySelector(".popup");
     const closeBtn = document.querySelector(".close-btn");
     const saveBtn = document.getElementById("guardarProductoBtn");
     const editBtn = document.getElementById("editarProductoBtn");
+    const searchBtn = document.getElementById("btnBuscar");
 
     // Agregar evento click al boton btnCreate
     btnCreate.addEventListener("click",ask);
@@ -34,7 +36,8 @@ async function loaded(event) {
     saveBtn.addEventListener("click",add);
     // Funcion para editar producto cuando se hace click en el boton editar
     editBtn.addEventListener("click", () => edit(state.item.codigo));
-
+    // Funcion para buscar producto cuando se hace click en el boton buscar
+    searchBtn.addEventListener("click",search);
     fetchAndList();
 }
 
@@ -55,6 +58,7 @@ function fetchAndList(){
         if (!response.ok) {errorMessage(response.status);return;}
         state.list = await response.json();
         render_list_item();
+        console.log(state.list);
     })();
 }
 

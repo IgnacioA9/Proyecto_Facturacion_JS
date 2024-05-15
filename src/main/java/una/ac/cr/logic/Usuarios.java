@@ -1,9 +1,14 @@
 package una.ac.cr.logic;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
-
+@Builder
+@AllArgsConstructor
 @Entity
 public class Usuarios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,17 +24,7 @@ public class Usuarios {
     @Basic
     @Column(name = "rol")
     private String rol;
-
-    public Usuarios(String identificacion, String contrasena, String rol) {
-        this.identificacion = identificacion;
-        this.contrasena = contrasena;
-        this.rol = rol;
-    }
-
-    public Usuarios() {
-
-    }
-
+    
     public int getNumeroid() {
         return numeroid;
     }

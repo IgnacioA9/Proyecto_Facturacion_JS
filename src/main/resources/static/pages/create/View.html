@@ -2,43 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UFT-8">
-    <title>Login</title>
+    <title>Registro</title>
     <link rel="stylesheet" href="/css/Style.css">
     <link rel="stylesheet" href="/css/Login.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/js/menu.js"> </script>
+    <script src="controller.js"> </script>
 </head>
 <body class="body-loggin">
-<header class="header">
-    <img src="/images/logo.png" class="logo">
-
-    <div class="navbar">
-        <div class="dropdown">
-            <a href="/presentation/login/loginpage">Login</a>
+<header class="header" id="menu"></header>
+<div class="popup">
+    <div class="form">
+        <h2>Crear Usuario</h2>
+        <div class="form-element">
+            <i class='bx bxs-user-circle'></i>
+            <input type="text" id="cedula" placeholder="Cedula" required >
         </div>
-        <div class="dropdown">
-            <a href="">Acerca de</a>
+        <div class="form-element">
+            <i class='bx bxs-lock-alt' ></i>
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <div class="form-element">
+            <input type="radio" id="ADMIN" value="ADMIN" name="rol">
+            <label for="ADMIN" data-text="Admin">Administrador</label>
+            <input type="radio" id="PROVEE" value="PROVEE" name="rol">
+            <label for="PROVEE" data-text="Proveedor">Proveedor</label>
+        </div>
+        <div class="form-element">
+            <a id="loginlink" href="#">Inicio de Sesion</a>
+        </div>
+        <div class="form-element">
+            <button id="create" value="create">Registrarse</button>
         </div>
     </div>
-</header>
-<div class="wrapperRegister">
-    <form action="/presentation/login/save" method="post">
-        <h2>Registro de Usuario</h2>
-        <div class="input-box">
-            <input type="text" name="identificacion" placeholder="Cedula" required >
-            <i class='bx bxs-user-circle'></i>
-        </div>
-        <div class="input-box">
-            <input type="password" name="contrasena" placeholder="Password" required >
-            <i class='bx bxs-lock-alt' ></i>
-        </div>
-        <div class="input-box">
-            <input type="radio" id="ADM" value="ADMIN" name="rol">
-            <label for="ADM" data-text="Admin"></label>
-            <input type="radio" id="PRO" value="PROVEE" name="rol">
-            <label for="PRO" data-text="Proveedor"></label>
-        </div>
-        <button type="submit" value="Crear" class="btn">Registarse</button>
-    </form>
 </div>
 </body>
 </html>

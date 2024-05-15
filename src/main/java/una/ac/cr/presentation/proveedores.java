@@ -24,7 +24,7 @@ public class proveedores {
      *-Rechazar proveedor
      *-Editar proveedor
      */
-
+    
     @GetMapping
     public List<Proveedores> read(){
         return service.proveedoresAll();

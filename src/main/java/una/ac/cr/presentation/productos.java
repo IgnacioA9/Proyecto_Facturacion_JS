@@ -29,7 +29,7 @@ public class productos {
 
     @GetMapping
     public List<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
-        return service.productossearchbyproveedor(user.getUsername());
+        return service.findProductosByProveedorCedula(user.getUsername());
     }
 
     @GetMapping("/{codigo}")

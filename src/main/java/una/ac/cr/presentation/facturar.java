@@ -32,7 +32,8 @@ public class facturar {
 
     @GetMapping
     public List<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
-        return service.productossearchbyproveedor(user.getUsername());
+        Proveedores proveedores = service.proveedoresread(user.getUsername());
+        return service.findProductosByProveedorCedula(proveedores.getCedula());
     }
 
     @GetMapping("/{numero}")

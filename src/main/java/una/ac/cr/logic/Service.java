@@ -35,6 +35,9 @@ public class Service {
     public Usuarios usuariosRead(String identificacion, String contresena){
         return usuariosRepository.usuariosread(identificacion, contresena);
     }
+    public List<Usuarios> findAll(){
+        return (List<Usuarios>) usuariosRepository.findAll();
+    }
     public void usuarioscreate(Usuarios usuarios){
         usuariosRepository.save(usuarios);
     }
@@ -135,8 +138,8 @@ public class Service {
     public Productos buscarProducto(String codigo){
         return productosRepository.obtenerProducto(codigo);
     }
-    public List<Productos> productossearchbyproveedor(String cedula){
-        return proveedoresProductosRepository.searchByProveedor(cedula);
+    public List<Productos> findProductosByProveedorCedula(String cedula){
+        return proveedoresProductosRepository.findProductosByProveedorCedula(cedula);
     }
     public void productosdelete(Productos productos){
         productosRepository.delete(productos);
