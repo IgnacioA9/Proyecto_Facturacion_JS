@@ -1,33 +1,33 @@
-var api=backend+'/usuarios';
+var api = backend + '/usuarios';
 
-var state ={
-    item : {identificacion:"", contrasena: "", rol:""}
-}
+var state = {
+    item: { identificacion: "", contrasena: "", rol: "" }
+};
 
-document.addEventListener("DOMContentLoaded",loaded);
+document.addEventListener("DOMContentLoaded", loaded);
 
 async function loaded(event) {
-    //try{ await menu();} catch(error){return;}
-    showRegister();
+    try {
+        await menu();
+        setupEventListeners();
+    } catch (error) {
+        console.error('Error loading menu:', error);
+        return;
+    }
 }
 
-function showRegister(){
-    var loginLink = document.getElementById("loginlink");
+function setupEventListeners() {
+    document.getElementById('create').addEventListener('click', add);
+}
+
+function showRegister() {
     document.querySelector(".popup").classList.add("active");
-
-    document.getElementById('create').addEventListener('click',add);
-
-    loginLink.addEventListener("click", function(event) {
-        // Prevenimos el comportamiento predeterminado del enlace
-        event.preventDefault();
-        // Redirigimos a la nueva URL
-        document.location = "/pages/login/View.html";
-    });
+    setupEventListeners(); // Aseguramos que los event listeners se configuren al mostrar el formulario de registro
 }
 
 function add() {
-    load_item();
-    if (!validate_item()) return;
+    loadItem();
+    if (!validateItem()) return;
     let request = new Request(api, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -44,7 +44,7 @@ function add() {
     })();
 }
 
-function load_item() {
+function loadItem() {
     var selectedRole = document.querySelector('input[name="rol"]:checked');
     state.item = {
         identificacion: document.getElementById("cedula").value,
@@ -53,29 +53,29 @@ function load_item() {
     };
 }
 
-function validate_item(){
-    var error=false;
+function validateItem() {
+    var error = false;
 
-    document.querySelectorAll('input').forEach( (i)=> {i.classList.remove("invalid");});
+    document.querySelectorAll('input').forEach((i) => { i.classList.remove("invalid"); });
 
-    if (state.item.identificacion.length==0){
+    if (state.item.identificacion.length == 0) {
         document.querySelector("#id").classList.add("invalid");
-        error=true;
+        error = true;
     }
 
-    if (state.item.contrasena.length==0){
+    if (state.item.contrasena.length == 0) {
         document.querySelector("#password").classList.add("invalid");
-        error=true;
+        error = true;
     }
 
     return !error;
 }
 
-function limpiarCampos(){
+function limpiarCampos() {
     var radios = document.getElementsByName("rol");
     document.getElementById("cedula").value = '';
     document.getElementById("password").value = '';
-    for(var i = 0; i < radios.length; i++) {
+    for (var i = 0; i < radios.length; i++) {
         radios[i].checked = false;
     }
 }

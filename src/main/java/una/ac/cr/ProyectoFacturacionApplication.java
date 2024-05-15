@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.RememberMeServices;
+import una.ac.cr.logic.Proveedores;
 import una.ac.cr.logic.Usuarios;
 
 @SpringBootApplication
@@ -23,7 +24,13 @@ public class ProyectoFacturacionApplication {
                 .contrasena("")
                 .rol("")
                 .build();
-
+        Proveedores proveedores = Proveedores.builder()
+                .cedula("")
+                .nombre("")
+                .correo("")
+                .telefono("")
+                .estado(false)
+                .build();
     }
 
     /*@Bean
@@ -51,9 +58,8 @@ public class ProyectoFacturacionApplication {
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/login").permitAll()
-                        .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("PROVEE")
                         .requestMatchers("/api/**").hasAnyAuthority("ADMIN","PROVEE")
                         .requestMatchers("/**").permitAll()
                 )

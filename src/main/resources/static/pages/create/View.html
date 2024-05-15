@@ -11,7 +11,7 @@
 </head>
 <body class="body-loggin">
 <header class="header" id="menu"></header>
-<div class="popup">
+<div class="popup active">
     <div class="form">
         <h2>Crear Usuario</h2>
         <div class="form-element">
@@ -22,15 +22,14 @@
             <i class='bx bxs-lock-alt' ></i>
             <input type="password" id="password" placeholder="Password" required>
         </div>
+        <br>
         <div class="form-element">
             <input type="radio" id="ADMIN" value="ADMIN" name="rol">
             <label for="ADMIN" data-text="Admin">Administrador</label>
             <input type="radio" id="PROVEE" value="PROVEE" name="rol">
             <label for="PROVEE" data-text="Proveedor">Proveedor</label>
         </div>
-        <div class="form-element">
-            <a id="loginlink" href="#">Inicio de Sesion</a>
-        </div>
+        <br>
         <div class="form-element">
             <button id="create" value="create">Registrarse</button>
         </div>

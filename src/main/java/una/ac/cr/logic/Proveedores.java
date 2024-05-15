@@ -1,10 +1,14 @@
 package una.ac.cr.logic;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.util.Collection;
 import java.util.Objects;
 
+@Builder
+@AllArgsConstructor
 @Entity
 public class Proveedores {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
