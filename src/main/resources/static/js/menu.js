@@ -6,6 +6,16 @@ const loginstate = {
     user: { id: "", rol: "" }
 };
 
+var state = {
+    personas: [
+        { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234", estado: false },
+        { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678", estado: true },
+        { cedula: "1122334455", nombre: "Carlos Ramirez", correo: "carlos.ramirez@example.com", telefono: "555-9101", estado: false },
+        { cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122", estado: true }
+    ],
+    item: { cedula: "", nombre: "", correo: "", telefono: "", estado: "" },
+}
+
 async function checkUser() {
     try {
         const request = new Request(`${api_login}/current-user`, { method: 'GET' });
@@ -76,7 +86,7 @@ function renderMenu() {
                         <p>&nbsp;&nbsp;${loginstate.user.id}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Personalizar perfil</a>
-                            <a id="logoutlink" href="#">Cerrar Sesión</a>
+                            <a id="logoutlink" href="#">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -95,7 +105,7 @@ function renderMenu() {
                         <p>&nbsp;&nbsp;${loginstate.user.id}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Personalizar perfil</a>
-                            <a id="logoutlink" href="#">Cerrar Sesión</a>
+                            <a id="logoutlink" href="#">Logout</a>
                         </div>
                     </div>
                 </div>
@@ -186,13 +196,14 @@ async function login() {
 async function logout(event) {
     event.preventDefault();
     const request = new Request(`${api_login}/logout`, { method: 'POST' });
-
     try {
         const response = await fetch(request);
         if (!response.ok) {
             errorMessage(response.status);
             return;
         }
+        sessionStorage.clear();
+        loginstate.logged = false;
         document.location = "/pages/login/view.html";
     } catch (error) {
         console.error('Error logging out:', error);

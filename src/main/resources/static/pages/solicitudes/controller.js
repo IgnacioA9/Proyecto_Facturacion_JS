@@ -1,16 +1,7 @@
 var api = backend + '/proveedores';
 
-var state = {
-    list: [
-        { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234", estado: false },
-        { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678", estado: false },
-        { cedula: "1122334455", nombre: "Carlos Ramirez", correo: "carlos.ramirez@example.com", telefono: "555-9101", estado: false },
-        { cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122", estado: false }
-    ],
-    item: { cedula: "", nombre: "", correo: "", telefono: "", estado: "" },
-}
-
 document.addEventListener("DOMContentLoaded", loaded);
+document.addEventListener('visibilitychange',unloaded);
 
 async function loaded(event) {
     try {
@@ -20,7 +11,22 @@ async function loaded(event) {
         console.error('Error loading menu:', error);
         return;
     }
+    state_json = sessionStorage.getItem("personas")
+    if (!state_json){
+        setupEventListeners();
+    }else{
+        state = JSON.parse(state_json);
+        renderList();
+    }
+
 }
+
+async function unloaded(event){
+    if (document.visibilityState==="hidden" && loginstate.logged){
+        sessionStorage.setItem("personas",JSON.stringify(state));
+    }
+}
+
 
 function setupEventListeners() {
     fetchAndList();
@@ -48,7 +54,7 @@ function fetchAndList() {
 function renderList() {
     var listado = document.querySelector('#listaSolicitudes tbody');
     listado.innerHTML = "";
-    state.list.forEach(item => renderListItem(listado, item));
+    state.personas.forEach(item => renderListItem(listado, item));
 }
 
 function renderListItem(listado, item) {
