@@ -3,7 +3,7 @@ const api_login = `${backend}/login`;
 
 const loginstate = {
     logged: false,
-    user: { id: "", rol: "" }
+    user: { id: "", rol: "" },
 };
 
 var state = {
@@ -14,6 +14,8 @@ var state = {
         { cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122", estado: true }
     ],
     item: { cedula: "", nombre: "", correo: "", telefono: "", estado: "" },
+    proveedorU : {cedula:"slee", nombre:"Proveedor Slee",correo:"Slee@gmai.com", telefono:"999",estado: "1"},
+    administrador : {nombre:"jsanchez"},
 }
 
 async function checkUser() {

@@ -93,61 +93,6 @@ function render_list_item(listado, item){
     listado.append(tr);
 }
 
-
-/*function render_list_item(lista,tbody){
-    var lista = document.getElementById('listaClientes');
-    var tbody = lista.getElementsByTagName('tbody')[0];
-
-    state.list.forEach(function (item){
-        var row = document.createElement('tr');
-
-        var cedulaCell = document.createElement('td');
-        cedulaCell.textContent = item.cedula;
-
-        var nombreCell = document.createElement('td');
-        nombreCell.textContent = item.nombre;
-
-        var correoCell = document.createElement('td');
-        correoCell.textContent = item.correo;
-
-        var telefonoCell = document.createElement('td');
-        telefonoCell.textContent = item.telefono;
-
-        var deleteCell = document.createElement('td');
-        var deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Eliminar';
-        deleteButton.classList.add("btnAction");
-        deleteButton.addEventListener('click', function() {
-            remove(item.codigo);
-        });
-        deleteCell.appendChild(deleteButton);
-
-        var editCell = document.createElement('td');
-        var editButton = document.createElement('button');
-        editButton.textContent = "Editar";
-        editButton.classList.add("btnAction");
-        editButton.addEventListener('click', function() {
-            var fila = this.parentNode.parentNode;
-            llenarCampos(fila);
-            showForm();
-            ocultarBotonGuardar();
-            mostrarBotonEditar();
-        });
-        editCell.appendChild(editButton);
-
-        row.appendChild(cedulaCell);
-        row.appendChild(nombreCell);
-        row.appendChild(correoCell);
-        row.appendChild(telefonoCell);
-        row.appendChild(editCell);
-        row.appendChild(deleteCell);
-
-        // Agregar la fila a tbody
-        tbody.appendChild(row);
-    });
-}*/
-
-
 function search(){
     nombreBusqueda = document.getElementById("busqueda").value;
     const request = new Request(api+`/search?nombre=${nombreBusqueda}`,

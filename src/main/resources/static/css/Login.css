@@ -131,7 +131,7 @@
 .input-personalizar i{
     position: absolute;
     left: 15px;
-    top: 85%;
+    top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
 }

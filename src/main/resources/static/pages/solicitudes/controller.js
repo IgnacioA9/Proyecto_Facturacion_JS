@@ -11,7 +11,7 @@ async function loaded(event) {
         console.error('Error loading menu:', error);
         return;
     }
-    state_json = sessionStorage.getItem("personas")
+    state_json = sessionStorage.getItem("variables")
     if (!state_json){
         setupEventListeners();
     }else{
@@ -23,7 +23,7 @@ async function loaded(event) {
 
 async function unloaded(event){
     if (document.visibilityState==="hidden" && loginstate.logged){
-        sessionStorage.setItem("personas",JSON.stringify(state));
+        sessionStorage.setItem("variables",JSON.stringify(state));
     }
 }
 
@@ -112,7 +112,6 @@ function renderListItem(listado, item) {
 
 function aprobar(item, row) {
     item.estado = true;
-    row.querySelector(".estado").textContent = "Aceptado";
     renderList();
 }
 
