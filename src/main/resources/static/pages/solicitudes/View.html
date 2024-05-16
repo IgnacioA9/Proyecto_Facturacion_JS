@@ -6,34 +6,24 @@
     <link rel="stylesheet" href="/css/Style.css">
     <link rel="stylesheet" href="/css/Admin.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="/js/menu.js"> </script>
+    <script src="controller.js"> </script>
 </head>
 <body class="body-admin">
-<header th:replace="~{fragments/header :: header}"></header>
+<header class="header" id="menu"></header>
 <div class="wrapper-admin">
     <h2>Solicitudes de usuario</h2>
-    <div class="table-wrapper">
+    <div id="listaSolicitudes" class="table-wrapper">
         <table class="content-table">
             <thead>
             <tr>
                 <th>Cedula</th>
                 <th>Nombre</th>
                 <th>Estado</th>
+                <th>Aceptar</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="proveedor : ${proveedores}">
-                <td th:text="${proveedor.cedula}"></td>
-                <td th:text="${proveedor.nombre}"></td>
-                <th:block th:if="${proveedor.estado==false}">
-                    <td th:text="${'No Aprobado'}"></td>
-                </th:block>
-                <td>
-                    <form action="/presentation/proveedores/aceptar" method="post">
-                        <input type="hidden" name="cedula" th:value="${proveedor.cedula}">
-                        <button type="submit" value="Aceptar" CLASS="btnChange">Aceptar</button>
-                    </form>
-                </td>
-            </tr>
             </tbody>
         </table>
     </div>

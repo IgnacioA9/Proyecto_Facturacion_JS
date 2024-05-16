@@ -18,6 +18,7 @@ async function loaded(event) {
 
 function setupEventListeners() {
     document.getElementById('create').addEventListener('click', add);
+    showRegister();
 }
 
 function showRegister() {
