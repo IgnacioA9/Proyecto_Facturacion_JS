@@ -11,7 +11,7 @@ async function loaded(event) {
         console.error('Error loading menu:', error);
         return;
     }
-    state_json = sessionStorage.getItem("personas")
+    state_json = sessionStorage.getItem("variables")
     if (!state_json){
         setupEventListeners();
     }else{
@@ -23,7 +23,7 @@ async function loaded(event) {
 
 async function unloaded(event){
     if (document.visibilityState==="hidden" && loginstate.logged){
-        sessionStorage.setItem("personas",JSON.stringify(state));
+        sessionStorage.setItem("variables",JSON.stringify(state));
     }
 }
 
@@ -52,7 +52,7 @@ function fetchAndList() {
 function renderList() {
     var listado = document.querySelector('#listaProveedores tbody');
     listado.innerHTML = "";
-    state.personas.forEach(item => renderListItem(listado, item));
+    state.proveedores.forEach(item => renderListItem(listado, item));
 }
 
 function renderListItem(listado, item) {
@@ -78,12 +78,12 @@ function rechazar(item, row) {
     renderList();
 }
 
-/*function rechazar(item, row) {
-    //item.estado = false; esto se cambia en el server
+/*function rechazar(proveedor, row) {
+    //proveedor.estado = false; esto se cambia en el server
     let request = new Request(api + `/rechazar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
+        body: JSON.stringify(proveedor)
     });
     (async () => {
         const response = await fetch(request);

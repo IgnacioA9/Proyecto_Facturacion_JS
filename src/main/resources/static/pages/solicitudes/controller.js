@@ -54,7 +54,7 @@ function fetchAndList() {
 function renderList() {
     var listado = document.querySelector('#listaSolicitudes tbody');
     listado.innerHTML = "";
-    state.personas.forEach(item => renderListItem(listado, item));
+    state.proveedores.forEach(item => renderListItem(listado, item));
 }
 
 function renderListItem(listado, item) {

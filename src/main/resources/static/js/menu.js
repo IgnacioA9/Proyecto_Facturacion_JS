@@ -7,16 +7,70 @@ const loginstate = {
 };
 
 var state = {
-    personas: [
-        { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234", estado: false },
-        { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678", estado: true },
-        { cedula: "1122334455", nombre: "Carlos Ramirez", correo: "carlos.ramirez@example.com", telefono: "555-9101", estado: false },
-        { cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122", estado: true }
+    proveedores: [
+        {
+            cedula: "1234567890",
+            nombre: "Juan Perez",
+            correo: "juan.perez@example.com",
+            telefono: "555-1234",
+            estado: false
+        },
+        {
+            cedula: "0987654321",
+            nombre: "Maria Lopez",
+            correo: "maria.lopez@example.com",
+            telefono: "555-5678",
+            estado: true
+        },
+        {
+            cedula: "1122334455",
+            nombre: "Carlos Ramirez",
+            correo: "carlos.ramirez@example.com",
+            telefono: "555-9101",
+            estado: false
+        },
+        {
+            cedula: "5566778899",
+            nombre: "Ana Torres",
+            correo: "ana.torres@example.com",
+            telefono: "555-1122",
+            estado: true
+        }
     ],
-    item: { cedula: "", nombre: "", correo: "", telefono: "", estado: "" },
-    proveedorU : {cedula:"slee", nombre:"Proveedor Slee",correo:"Slee@gmai.com", telefono:"999",estado: "1"},
-    administrador : {nombre:"jsanchez"},
-}
+    provedor: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
+
+    productos: [
+        {codigo: "001", nombre: "Manzana", precio: "0.50"},
+        {codigo: "002", nombre: "Banana", precio: "0.30"},
+        {codigo: "003", nombre: "Naranja", precio: "0.40"},
+        {codigo: "004", nombre: "Fresa", precio: "1.20"},
+        {codigo: "005", nombre: "Uva", precio: "2.00"}
+    ],
+    producto: {codigo: "", nombre: "", precio: ""},
+
+    clientes: [
+        {cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234"},
+        {cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678"},
+        {cedula: "1122334455", nombre: "Carlos Ramirez", correo: "carlos.ramirez@example.com", telefono: "555-9101"},
+        {cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122"},
+        {cedula: "6677889900", nombre: "Luisa Fernandez", correo: "luisa.fernandez@example.com", telefono: "555-3344"}
+    ],
+    cliente: {cedula: "", nombre: "", correo: "", telefono: ""},
+
+    proveedorU: {cedula: "slee", nombre: "Proveedor Slee", correo: "Slee@gmai.com", telefono: "999", estado: "1"},
+    administrador: {nombre: "jsanchez"},
+
+    facturas: [
+        { numero: "001", cantidadT: "2", monto: "30.00", fecha: "2023-05-15",
+            contiene: [{ codigo: "001", cantidad: 5 }, { codigo: "002", cantidad: 10 }], cliente: { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234" }
+        },
+        {numero: "002", cantidadT: "1", monto: "20.00", fecha: "2023-05-16",
+            contiene: [{ codigo: "003", cantidad: 7 }], cliente: { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678" }
+        }
+    ],
+    factura: { numero: "", cantidadT: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
+    }
+};
 
 async function checkUser() {
     try {
@@ -87,7 +141,7 @@ function renderMenu() {
                     <div class="dropdown">
                         <p>&nbsp;&nbsp;${loginstate.user.id}</p>
                         <div class="dropdown-content">
-                            <a id="profilelink" href="#">Personalizar perfil</a>
+                            <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
                         </div>
                     </div>
@@ -106,7 +160,7 @@ function renderMenu() {
                     <div class="dropdown">
                         <p>&nbsp;&nbsp;${loginstate.user.id}</p>
                         <div class="dropdown-content">
-                            <a id="profilelink" href="#">Personalizar perfil</a>
+                            <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
                         </div>
                     </div>
