@@ -31,6 +31,7 @@ public class ProyectoFacturacionApplication {
                 .telefono("")
                 .estado(false)
                 .build();
+
     }
 
     /*@Bean
@@ -60,6 +61,7 @@ public class ProyectoFacturacionApplication {
                         .requestMatchers("/api/login/login").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
                         .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("PROVEE")
+                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasAnyAuthority("PROVEE")
                         .requestMatchers("/api/**").hasAnyAuthority("ADMIN","PROVEE")
                         .requestMatchers("/**").permitAll()
                 )

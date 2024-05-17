@@ -44,18 +44,19 @@ function setupEventListeners() {
     });
 
 
-    /*
+
     // Funcion para guardar producto cuando se hace click en el boton guardar
     saveBtn.addEventListener("click",add);
     // Funcion para editar producto cuando se hace click en el boton editar
     editBtn.addEventListener("click", edit);
     // Funcion para buscar producto cuando se hace click en el boton buscar
-    searchBtn.addEventListener("click",search);*/
+    searchBtn.addEventListener("click",search);
 
+    /*
     // Funcion para guardar producto cuando se hace click en el boton guardar
     saveBtn.addEventListener("click",addProduct);
     // Funcion para editar producto cuando se hace click en el boton editar
-    //editBtn.addEventListener("click", saveEdit);
+    //editBtn.addEventListener("click", saveEdit);*/
 
     fetchAndList();
 }
@@ -63,17 +64,16 @@ function setupEventListeners() {
 //Cargar la lista y renderizarla
 
 function fetchAndList(){
-    /*const request = new Request(api, {method: 'GET', headers: { }});
+    const request = new Request(api+"/cargar", {method: 'GET', headers: { }});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         const data = await response.json();
         console.log(data); // Verificar la respuesta
-        state.list = data;
-        renderList();
-        console.log(state.list);
-    })();*/
-    render_list();
+        state.clientes = data;
+        render_list();
+        console.log(state.clientes);
+    })();
 }
 
 function render_list() {
@@ -97,7 +97,7 @@ function renderListItem(listado, item) {
         showFormEdit();
     });
     tr.querySelector(".remove").addEventListener("click", function () {
-        removeFromList(item.cedula);
+        remove(item.codigo);
     });
     // Agregar el <tr> al listado
     listado.appendChild(tr);
@@ -108,23 +108,23 @@ function renderListItem(listado, item) {
 function add(){
     load_item();
     if(!validate_item()) return;
-    let request = new Request(api, {method: 'POST',
+    let request = new Request(api + "/create", {method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(state.producto)});
+        body: JSON.stringify(state.cliente)});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         NoshowForm();
-        fetchAndList();
+        await fetchAndList();
         console.log("Contenido de la lista:");
         console.log(state.productos);
     })();
 }
 
 function edit(){
-    /*load_item();
+    //load_item();
     if(!validate_item()) return;
-    let request = new Request(api+`/edit`, {method: 'POST',
+    let request = new Request(api+`/edit/${state.cliente.codigo}`, {method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(state.item)});
     (async ()=>{
@@ -132,11 +132,11 @@ function edit(){
         if (!response.ok) {errorMessage(response.status);return;}
         NoshowForm();
         fetchAndList();
-    })();*/
+    })();
 }
 
 function remove(id){
-    let request = new Request(backend+`/productos/${id}`,
+    let request = new Request(backend+`/delete/${id}`,
         {method: 'DELETE', headers: {}});
     (async ()=>{
         const response = await fetch(request);
@@ -216,7 +216,7 @@ function validate_item(){
 
 function load_item(){
     state.cliente={
-        cedula:document.getElementById("codigo").value,
+        cedula:document.getElementById("cedula").value,
         nombre:document.getElementById("nombre").value,
         correo: document.getElementById("correo").value,
         telefono: document.getElementById("telefono").value
@@ -245,7 +245,7 @@ function showForm() {
     document.getElementById('guardarProductoBtn').classList.remove('invisible');
 }
 
-function showFormEdit(item) {
+function showFormEdit() {
     // Mostrar el popup
     const popup = document.querySelector(".popup");
     popup.classList.add("active");

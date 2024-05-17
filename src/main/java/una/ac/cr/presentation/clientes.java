@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import una.ac.cr.logic.Clientes;
-import una.ac.cr.logic.Posee;
-import una.ac.cr.logic.Service;
+import una.ac.cr.data.*;
+import una.ac.cr.logic.*;
 import una.ac.cr.security.UserDetailsImp;
 
 import java.util.List;
@@ -19,6 +18,15 @@ public class clientes {
     @Autowired
     private Service service;
 
+    @Autowired
+    ProveedoresRepository proveedoresRepository;
+
+    @Autowired
+    ClientesRepository clientesRepository;
+
+    @Autowired
+    ProveedorClientesRepository proveedorClientesRepository;
+
     /*Metodos requeridos
     *-Mostrar clientesbyProveedor
     *-Buscar cliente
@@ -27,69 +35,84 @@ public class clientes {
     *-Eliminiar cliente
     */
 
-    @GetMapping
-    public List<Clientes> read(@AuthenticationPrincipal UserDetailsImp user){
-        return service.clientessearchbyproveedor(user.getUsername());
+    @GetMapping("/cargar")
+    public Iterable<Clientes> read(@AuthenticationPrincipal UserDetailsImp user){
+        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+        //List<Clientes> lista = proveedorClientesRepository.searchByProveedor("slee");
+        List<Clientes> lista = (List<Clientes>) clientesRepository.findAll();
+        for (Clientes cliente:lista){
+            cliente.setAdquieresByNumeroid(null);
+            cliente.setPoseeByNumeroid(null);
+        }
+        return lista;
     }
 
-    @GetMapping("/{cedula}")
-    public Clientes read(@AuthenticationPrincipal UserDetailsImp user,@PathVariable String cedula){
+    /*@GetMapping("/{codigo}")
+    public Productos read(@PathVariable String codigo){
         try{
-            return service.clientesSearchByCedula(user.getUsername(),cedula);
+            return service.buscarProducto(codigo);
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
     @GetMapping("/search")
-    public List<Clientes> findByName(@AuthenticationPrincipal UserDetailsImp user, @RequestParam String nombre){
-        return service.clientessearchbyname(user.getUsername(),nombre);
+    public Iterable<Clientes> findByName(@RequestParam String nombre){
+        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+        //List<Clientes> lista = proveedorClientesRepository.searchByProveedor(pr.getCedula(),nombre);
+        List<Clientes> lista = clientesRepository.clientesAll();
+        for (Clientes cliente : lista){
+            cliente.setAdquieresByNumeroid(null);
+            cliente.setPoseeByNumeroid(null);
+        }
+        return lista;
     }
 
-    @PostMapping()
-    public void create(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Clientes cliente){
+    @PostMapping("/create")
+    public void create(@RequestBody Clientes cliente){
         try{
-            Clientes clientesread = service.clientesread(cliente.getCedula());
-            if(clientesread == null){
-                service.clientescreate(cliente);
-                clientesread = service.clientesread(cliente.getCedula());
+            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Clientes c = clientesRepository.clientesread(cliente.getCedula());
+            if(c == null){
+                c = clientesRepository.save(cliente);
                 Posee posee = new Posee();
-                posee.setNumeroclien(clientesread.getNumeroid());
-                posee.setProveedoresByNumeroprovee(service.proveedoresread(user.getUsername()));
-                service.poseecreate(posee);
-            }
-            else{
-                clientesread.setCorreo(cliente.getCorreo());
-                clientesread.setNombre(cliente.getNombre());
-                clientesread.setTelefono(cliente.getTelefono());
-                service.clientescreate(clientesread);
+                posee.setNumeroclien(c.getNumeroid());
+                //posee.setProveedoresByNumeroprovee(pr);
+                proveedorClientesRepository.save(posee);
             }
         }catch (Exception ex){
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
-
-    @PostMapping("/edit")
-    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Clientes cliente){
+    //@AuthenticationPrincipal UserDetailsImp user,
+    @PostMapping("/edit/{codigo}")
+    public Clientes  edit (@PathVariable String codigo){
         try{
-            Clientes clientesread = service.clientesread(cliente.getCedula());
-            clientesread.setCorreo(cliente.getCorreo());
-            clientesread.setNombre(cliente.getNombre());
-            clientesread.setTelefono(cliente.getTelefono());
-            service.clientescreate(clientesread);
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(pr.getCedula(),codigo);
+            c.setAdquieresByNumeroid(null);
+            c.setPoseeByNumeroid(null);
+
+            return c;
         }catch (Exception ex){
-            throw  new ResponseStatusException(HttpStatus.CONFLICT);
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/{cedula}")
-    public void delete(@PathVariable String cedula){
+    @DeleteMapping("/delete/{codigo}")
+    public void delete(@PathVariable String codigo){
         try{
-            Clientes clientesread = service.clientesread(cedula);
-            Posee poseeread = service.poseeread(clientesread.getNumeroid());
-            service.poseeDelete(poseeread);
-            service.clientesdelete(clientesread);
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(pr.getCedula(),codigo);
+            if(c == null && c.getNumeroid()==0){
+                Posee posee = new Posee();
+                posee.setNumeroclien(c.getNumeroid());
+                //posee.setProveedoresByNumeroprovee(pr);
+                proveedorClientesRepository.delete(posee);
+                clientesRepository.delete(c);
+            }
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    }}
+    }
+}

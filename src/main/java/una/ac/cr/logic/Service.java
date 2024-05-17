@@ -49,7 +49,7 @@ public class Service {
     //PROVEEDORES
 
     public Proveedores proveedoresread(String identificacion){
-        return proveedoresRepository.proveedoresread(identificacion);
+        return proveedoresRepository.findProveedoresByCedula(identificacion);
     }
     public void proveedorescreate(Proveedores proveedores){
         proveedoresRepository.save(proveedores);

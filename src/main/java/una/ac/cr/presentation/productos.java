@@ -7,6 +7,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import una.ac.cr.data.ProductosRepository;
+import una.ac.cr.data.ProveedoresProductosRepository;
+import una.ac.cr.data.ProveedoresRepository;
 import una.ac.cr.logic.*;
 import una.ac.cr.security.UserDetailsImp;
 
@@ -19,6 +22,15 @@ public class productos {
     @Autowired
     private Service service;
 
+    @Autowired
+    ProveedoresRepository proveedoresRepository;
+
+    @Autowired
+    ProductosRepository productosRepository;
+
+    @Autowired
+    ProveedoresProductosRepository proveedoresProductosRepository;
+
     /*Metodos requeridos
      *-Mostrar productosbyProveedor
      *-Buscar producto
@@ -27,63 +39,81 @@ public class productos {
      *-Eliminiar producto
      */
 
-    @GetMapping
-    public List<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
-        return service.findProductosByProveedorCedula(user.getUsername());
+    @GetMapping("/cargar")
+    public Iterable<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
+        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+        //List<Productos> lista = proveedoresProductosRepository.findProductosByProveedorCedula("slee");
+        List<Productos> lista = (List<Productos>) productosRepository.findAll();
+        for (Productos producto:lista){
+            producto.setAlmacenaByNumeroid(null);
+            producto.setContienesByNumeroid(null);
+        }
+        return lista;
     }
 
-    @GetMapping("/{codigo}")
+    /*@GetMapping("/{codigo}")
     public Productos read(@PathVariable String codigo){
         try{
             return service.buscarProducto(codigo);
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-    }
+    }*/
 
     @GetMapping("/search")
-    public List<Productos> findByName(@AuthenticationPrincipal UserDetailsImp user, @RequestParam String nombre){
-        return service.productosSearchByName(user.getUsername(),nombre);
+    public Iterable<Productos> findByName(@RequestParam String nombre){
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+        List<Productos> lista = proveedoresProductosRepository.searchByProveedorAndName(pr.getCedula(),nombre);
+        for (Productos producto : lista){
+            producto.setAlmacenaByNumeroid(null);
+            producto.setContienesByNumeroid(null);
+        }
+        return lista;
     }
 
-    @PostMapping()
-    public void create(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Productos producto){
+    @PostMapping("/create")
+    public void create(@RequestBody Productos producto){
         try{
-            Productos buscarProducto = service.buscarProducto(producto.getCodigo());
-            if(buscarProducto == null){
-                service.productoscreate(producto);
-                buscarProducto = service.buscarProducto(producto.getCodigo());
+            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Productos p = productosRepository.obtenerProducto(producto.getCodigo());
+            if(p == null){
+                p = productosRepository.save(producto);
                 Almacena almacena = new Almacena();
-                almacena.setNumeroprod(buscarProducto.getNumeroid());
-                almacena.setProveedoresByNumeroprovee(service.proveedoresread(user.getUsername()));
-
-                service.almacenacreate(almacena);
+                almacena.setNumeroprod(p.getNumeroid());
+                //almacena.setProveedoresByNumeroprovee(pr);
+                proveedoresProductosRepository.save(almacena);
             }
         }catch (Exception ex){
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
-
-    @PostMapping("/edit")
-    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Productos producto){
+    //@AuthenticationPrincipal UserDetailsImp user,
+    @PostMapping("/edit/{codigo}")
+    public Productos edit (@PathVariable String codigo){
         try{
-            Productos buscarProducto = service.buscarProducto(producto.getCodigo());
-            buscarProducto.setPrecio(producto.getPrecio());
-            buscarProducto.setNombre(producto.getNombre());
-            buscarProducto.setCodigo(producto.getCodigo());
-            service.productoscreate(buscarProducto);
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo(pr.getCedula(),codigo);
+            p.setAlmacenaByNumeroid(null);
+            p.setContienesByNumeroid(null);
+
+            return p;
         }catch (Exception ex){
-            throw  new ResponseStatusException(HttpStatus.CONFLICT);
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/{codigo}")
+    @DeleteMapping("/delete/{codigo}")
     public void delete(@PathVariable String codigo){
         try{
-            Productos buscarProducto = service.buscarProducto(codigo);
-            Almacena almacenaread = service.almacenaread(buscarProducto.getNumeroid());
-            service.almacenaDelete(almacenaread);
-            service.productosdelete(buscarProducto);
+            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+                Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo("slee",codigo);
+            if(p == null && p.getNumeroid()==0){
+                Almacena almacena = new Almacena();
+                almacena.setNumeroprod(p.getNumeroid());
+                //almacena.setProveedoresByNumeroprovee(pr);
+                proveedoresProductosRepository.delete(almacena);
+                productosRepository.delete(p);
+            }
         }catch (Exception ex){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
