@@ -29,16 +29,16 @@ public class usuarios {
             // Si el usuario no existe, lo crea
             if (usuarioRead == null) {
                 service.usuarioscreate(usuarios);
-
-                // Crea un nuevo proveedor vinculado al usuario
-                Proveedores proveedor = Proveedores.builder()
-                        .cedula(usuarios.getIdentificacion())
-                        .nombre("")
-                        .correo("")
-                        .telefono("")
-                        .estado(false)
-                        .build();
-                service.proveedorescreate(proveedor);
+                if ("PROVEE".equals(usuarios.getRol())) {
+                    Proveedores proveedor = Proveedores.builder()
+                            .cedula(usuarios.getIdentificacion())
+                            .nombre("")
+                            .correo("")
+                            .telefono("")
+                            .estado(false)
+                            .build();
+                    service.proveedorescreate(proveedor);
+                }
             }
         } catch (Exception ex) {
             // Lanza una excepción HTTP 409 en caso de error
