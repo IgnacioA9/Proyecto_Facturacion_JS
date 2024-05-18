@@ -1,4 +1,4 @@
-var api = backend + '/facturar';
+var api = backend + '/facturas';
 
 document.addEventListener("DOMContentLoaded", loaded);
 document.addEventListener('visibilitychange', unloaded);
@@ -32,6 +32,10 @@ function setupEventListeners() {
 
     const clienteSpan = document.getElementById("clienteFactura");
     clienteSpan.textContent = state.factura.cliente.nombre;
+
+    const saveBtn = document.getElementById("save");
+    // Funcion para guardar factura cuando se hace click en el boton guardar
+    saveBtn.addEventListener("click",addFactura);
 
     // Asigna los href a los enlaces
     document.getElementById("linkListaClientes").href = "/pages/clientes/View.html";
@@ -70,15 +74,16 @@ function fetchProductos() {
 
 function render_list() {
     const clienteSpan = document.getElementById("clienteFactura");
-    clienteSpan.textContent = state.factura.cliente.nombre;
-
     const total = document.getElementById("total");
-    total.textContent = state.factura.monto;
-
     const ctotal = document.getElementById("ctotal");
-    ctotal.textContent = state.factura.cantidadT;
     var listado = document.querySelector('#listaFacturas tbody');
+
+    clienteSpan.textContent = state.factura.cliente.nombre;
+    total.textContent = state.factura.monto;
+    ctotal.textContent = state.factura.cantidadT;
     listado.innerHTML = "";
+
+
     state.factura.contiene.forEach(item => renderListItem(listado, item));
 }
 
@@ -102,6 +107,23 @@ function renderListItem(listado, item) {
         // Agregar el <tr> al listado
         listado.appendChild(tr);
     }
+}
+
+function addFactura(){
+    // Obtener la fecha actual del sistema
+    let fechaActual = new Date();
+    // Formatear la fecha actual en el formato deseado (por ejemplo, YYYY-MM-DD)
+    let fechaFormateada = fechaActual.toISOString().split('T')[0];
+    // Asignar la fecha formateada al campo 'fecha' de la factura
+    state.factura.fecha = fechaFormateada;
+
+    let request = new Request(api + "/create", {method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(state.factura)});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status);return;}
+    })();
 }
 
 function addCliente() {
