@@ -27,6 +27,11 @@ async function unloaded(event){
 }
 
 function setupEventListeners() {
+
+    // Asingar el nombre del proveedor a la tabla
+    const proveedorSpan = document.getElementById("proveedor");
+    proveedorSpan.textContent = " " + loginstate.user.id;
+
     // Obtener referencia al botón btnCreate y al popup
     const btnCreate = document.getElementById("btnCreate");
     const popup = document.querySelector(".popup");

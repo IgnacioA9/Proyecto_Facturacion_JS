@@ -33,6 +33,15 @@ public class proveedores {
      *-Editar proveedor
      */
 
+    @GetMapping("/cargar/proveedor")
+    public Proveedores readProveedorA(@AuthenticationPrincipal UserDetailsImp user){
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+        pr.setAlmacenasByNumeroid(null);
+        pr.setPoseesByNumeroid(null);
+        pr.setTienesByNumeroid(null);
+        return pr;
+    }
+
     @GetMapping("/cargar/acepatdos")
     public Iterable<Proveedores> read(){
         List<Proveedores> lista = proveedoresRepository.findAllByEstadoTrue();
@@ -87,15 +96,15 @@ public class proveedores {
         }
     }
 
-    @PostMapping()
-    public void edit(@RequestBody Proveedores proveedor) {
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user, @RequestBody Proveedores proveedor) {
         try {
-            Proveedores proveedoresread = service.proveedoresread(proveedor.getCedula());
-            if (proveedoresread != null) {
-                proveedoresread.setNombre(proveedor.getNombre());
-                proveedoresread.setCorreo(proveedor.getCorreo());
-                proveedoresread.setTelefono(proveedor.getTelefono());
-                service.proveedorescreate(proveedoresread);
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+            if (pr != null) {
+                pr.setNombre(proveedor.getNombre());
+                pr.setCorreo(proveedor.getCorreo());
+                pr.setTelefono(proveedor.getTelefono());
+                proveedoresRepository.save(pr);
             }
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);

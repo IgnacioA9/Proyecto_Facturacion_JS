@@ -1,13 +1,7 @@
 var api=backend+'/proveedores';
 
-
 document.addEventListener("DOMContentLoaded",loaded);
 document.addEventListener('visibilitychange',unloaded);
-
-/*async function loaded(event){
-    try{ await menu();} catch(error){return;}
-    renderEdit();
-}*/
 
 async function loaded(event) {
     try {
@@ -31,7 +25,6 @@ async function unloaded(event){
         sessionStorage.setItem("variables",JSON.stringify(state));
     }
 }
-
 
 function renderEdit() {
     var divPer = document.getElementById("personalizarDiv");
@@ -58,7 +51,7 @@ function renderEdit() {
             <button type="submit" id="guardarBtn" value="Guardar" class="btn">Guardar</button>
         `;
         document.getElementById('guardarBtn').addEventListener('click', function() {
-            editarProveedor();
+            editProveedor();
         });
     }else {
         divPer.innerHTML = `
@@ -101,13 +94,12 @@ function renderEdit() {
     }
 }
 
-/*function editarProvedor() {
-    loaditem();
-    //item.estado = true; esto se cambia en el server
-    let request = new Request(api , {
+function editProveedor() {
+    loadProveedorU();
+    let request = new Request(api +`/edit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
+        body: JSON.stringify(state.proveedorU)
     });
     (async () => {
         const response = await fetch(request);
@@ -115,17 +107,18 @@ function renderEdit() {
             errorMessage(response.status);
             return;
         }
-        fetchAndList();
+        renderEdit();
     })();
-}*/
-
-function editarProveedor() {
-    state.proveedorU.nombre = document.getElementById("nombre").value,
-    state.proveedorU.correo = document.getElementById("correo").value,
-    state.proveedorU.telefono = document.getElementById("telefono").value
-    renderEdit();
 }
 
+function loadProveedorU() {
+        state.proveedorU={
+            nombre:document.getElementById("nombre").value,
+            correo: document.getElementById("correo").value,
+            telefono: document.getElementById("telefono").value
+        };
+        console.log(state.proveedorU);
+}
 
 function editarAdministrador() {
     state.administrador.nombre = document.getElementById("nombreAdm").value;

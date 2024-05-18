@@ -28,6 +28,10 @@ async function unloaded(event){
 //Cargar la lista y renderizarla
 
 function fetchAndList(){
+    // Asingar el nombre del proveedor a la tabla
+    const proveedorSpan = document.getElementById("proveedor");
+    proveedorSpan.textContent = " " + loginstate.user.id;
+
     /*const request = new Request(api, {method: 'GET', headers: { }});
     (async ()=>{
         const response = await fetch(request);
@@ -59,8 +63,8 @@ function renderListItem(listado, item) {
     `;
     // Asignar eventos a los botones de XML y PDF
     tr.querySelector(".XML").addEventListener("click", function () {
-        renderXML(item);
-        //downloadXML(item);
+        //renderXML(item);
+        downloadXML(item);  //El profe menciono que este metodo estaba mejor
     });
     tr.querySelector(".PDF").addEventListener("click", function () {
         console.log("GENERANDO PDF")

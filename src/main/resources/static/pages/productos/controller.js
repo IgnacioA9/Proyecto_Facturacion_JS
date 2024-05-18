@@ -27,6 +27,11 @@ async function unloaded(event){
 }
 
 function setupEventListeners() {
+
+    // Asingar el nombre del proveedor a la tabla
+    const proveedorSpan = document.getElementById("proveedor");
+    proveedorSpan.textContent = " " + loginstate.user.id;
+
     // Obtener referencia al botón btnCreate y al popup
     const btnCreate = document.getElementById("btnCreate");
     const popup = document.querySelector(".popup");
@@ -42,8 +47,6 @@ function setupEventListeners() {
     closeBtn.addEventListener("click", function() {
         popup.classList.remove("active");
     });
-
-
 
     // Funcion para guardar producto cuando se hace click en el boton guardar
     saveBtn.addEventListener("click",add);

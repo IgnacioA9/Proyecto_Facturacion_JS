@@ -1,6 +1,9 @@
 const backend = "http://localhost:8080/api";
 const api_login = `${backend}/login`;
 
+// Initialize menu on page load
+document.addEventListener('DOMContentLoaded', menu);
+
 const loginstate = {
     logged: false,
     user: { id: "", rol: "" },
@@ -16,7 +19,8 @@ var state = {
     clientes: [],
     cliente: {cedula: "", nombre: "", correo: "", telefono: ""},
 
-    proveedorU: {cedula: "slee", nombre: "Proveedor Slee", correo: "Slee@gmai.com", telefono: "999", estado: "1"},
+    proveedorU: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
+
     administrador: {nombre: "jsanchez"},
 
     facturas: [
@@ -52,7 +56,22 @@ async function menu() {
         document.location = "/pages/login/view.html";
         throw new Error("Usuario no autorizado");
     }*/
+    if(loginstate.logged){
+        loadUserProveedor();
+    }
     renderMenu();
+}
+
+function loadUserProveedor(){
+    const request = new Request(backend+"/proveedores/cargar/proveedor", {method: 'GET', headers: { }});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status);return;}
+        const data = await response.json();
+        console.log(data); // Verificar la respuesta
+        state.proveedorU = data;
+        //console.log(state.proveedorU);
+    })();
 }
 
 function renderMenu() {
@@ -238,6 +257,3 @@ function errorMessage(status) {
     }
     window.alert(error);
 }
-
-// Initialize menu on page load
-document.addEventListener('DOMContentLoaded', menu);

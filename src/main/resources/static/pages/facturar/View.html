@@ -11,61 +11,43 @@
 </head>
 <body class="body-facturar">
 <header class="header" id="menu"></header>
-<div class="wrapper-facturar">
-    <h1>Facturar</h1>
-    <div class="input-box">
-        <div class="input-container">
-            <label for="proveedor">Proveedor: </label>
-            <span id="proveedor"></span>
-        </div>
-        <div class="input-container">
-            <form action="/presentation/facturar/buscarCliente" method="post">
-                <label for="cliente">Cliente: </label>
-                <span th:text="${clienteVenta.nombre}"></span>
-                <input type="text" name="cedula" id="cliente" placeholder="ID" required>
-                <button class="btnSmall"></button>
 
-            </form>
-            <a href="/presentation/clientes/show">
-                <img src="/images/list.png" alt="Descripción de la imagen">
-            </a>
+<div class="popup active">
+    <div class="form">
+        <h2>Facturar</h2>
+        <div class="form-element">
+            <h3>Proveedor:<span id="proveedor"></span></h3>
+        </div>
+        <div class="form-element">
+            <a id="linkListaClientes" class="icon-link"></a>
+            <input type="text" id="clienteFacturas" placeholder="Cliente" required>
+            <a id="linkBuscarClientes" class="icon-link search-icon"></a>
+        </div>
+        <div class="form-element">
+            <a id="linkListaProductos" class="icon-link"></a>
+            <input type="text" id="productoFacturas" placeholder="Producto" required>
+            <button id="linkBuscarProducto" class="icon-link"></button>
         </div>
         <br>
-        <div class="input-container">
-            <form action="/presentation/facturar/buscarProducto" method="post">
-                <label for="producto">Codigo: </label>
-                <input type="text" name="codigo" id="producto" placeholder="Codigo" required>
-                    <button class="btnSmall"></button>
-            </form>
-            <a href="/presentation/productos/show">
-                <img src="/images/list.png" alt="Descripción de la imagen">
-            </a>
+        <div class="form-element-table">
+            <table class="content-table">
+                <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <div class="form-element">
+            <button id="save" class="saveBtn" value="Guardar">Crear Factura</button>
         </div>
     </div>
-    <div class="table-wrapper">
-        <table class="content-table">
-            <thead>
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="producto : ${productos}">
-                <td th:text="${producto.codigo}"></td>
-                <td th:text="${producto.nombre}"></td>
-                <td th:text="${producto.precio}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="result-wrapper">
-        <h3>Costo Total: </h3><p th:text="${session.valorFactura}"></p>
-    </div>
-    <form action="/presentation/facturar/guardarFactura" method="post">
-        <button type="submit" class="btn">Guardar Factura</button>
-    </form>
 </div>
 </body>
 </html>
