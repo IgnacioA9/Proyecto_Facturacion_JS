@@ -39,6 +39,10 @@ public class Proveedores {
     @OneToMany(mappedBy = "proveedoresByNumeroprovee")
     private Collection<Tiene> tienesByNumeroid;
 
+    public Proveedores() {
+
+    }
+
     public int getNumeroid() {
         return numeroid;
     }

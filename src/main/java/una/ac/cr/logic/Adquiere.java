@@ -1,10 +1,12 @@
 package una.ac.cr.logic;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 public class Adquiere {
 
     @Id

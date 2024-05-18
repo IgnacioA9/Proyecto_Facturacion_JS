@@ -7,36 +7,7 @@ const loginstate = {
 };
 
 var state = {
-    proveedores: [
-        {
-            cedula: "1234567890",
-            nombre: "Juan Perez",
-            correo: "juan.perez@example.com",
-            telefono: "555-1234",
-            estado: false
-        },
-        {
-            cedula: "0987654321",
-            nombre: "Maria Lopez",
-            correo: "maria.lopez@example.com",
-            telefono: "555-5678",
-            estado: true
-        },
-        {
-            cedula: "1122334455",
-            nombre: "Carlos Ramirez",
-            correo: "carlos.ramirez@example.com",
-            telefono: "555-9101",
-            estado: false
-        },
-        {
-            cedula: "5566778899",
-            nombre: "Ana Torres",
-            correo: "ana.torres@example.com",
-            telefono: "555-1122",
-            estado: true
-        }
-    ],
+    proveedores: [],
     provedor: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
 
     productos: [

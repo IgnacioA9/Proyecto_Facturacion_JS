@@ -50,7 +50,10 @@ function setupEventListeners() {
     // Funcion para editar producto cuando se hace click en el boton editar
     editBtn.addEventListener("click", edit);
     // Funcion para buscar producto cuando se hace click en el boton buscar
-    searchBtn.addEventListener("click",search);
+    searchBtn.addEventListener("click", () => {
+        const searchTerm = document.getElementById("busqueda").value;
+        search(searchTerm);
+    });
 
 
     /*
@@ -122,11 +125,11 @@ function add(){
 }
 
 function edit(){
-    //load_item();
+    load_item();
     if(!validate_item()) return;
-    let request = new Request(api+`/delete/${state.producto.codigo}`, {method: 'POST',
+    let request = new Request(api+`/edit`, {method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(state.item)});
+        body: JSON.stringify(state.producto)});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
@@ -135,25 +138,47 @@ function edit(){
     })();
 }
 
-function remove(id){
-    let request = new Request(backend+`/delete/${id}`,
-        {method: 'DELETE', headers: {}});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
-        fetchAndList();
+function remove(id) {
+    let request = new Request(api+`/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    (async () => {
+        try {
+            const response = await fetch(request);
+            if (!response.ok) {
+                errorMessage(response.status);
+                return;
+            }
+            fetchAndList(); // Asume que esta función actualiza la lista de productos
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+            errorMessage('Error al eliminar el producto'); // Muestra un mensaje de error apropiado
+        }
     })();
 }
 
-function search(){
-    nombreBusqueda = document.getElementById("busqueda").value;
-    const request = new Request(api+`/search?nombre=${nombreBusqueda}`,
-        {method: 'GET', headers: { }});
+
+function search(id){
+    const request = new Request(api+`/search/${id}`, {method: 'GET', headers: {}});
     (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
-        state.list = await response.json();
-        render_list();
+        try {
+            const response = await fetch(request);
+            if (!response.ok) {
+                errorMessage(response.status);
+                return;
+            }
+            const data = await response.json();
+            console.log(data); // Verificar la respuesta
+            state.productos = data;
+            render_list();
+            console.log(state.productos);
+        } catch (error) {
+            console.error('Error al buscar el producto:', error);
+            errorMessage('Error al buscar el producto'); // Muestra un mensaje de error apropiado
+        }
     })();
 }
 

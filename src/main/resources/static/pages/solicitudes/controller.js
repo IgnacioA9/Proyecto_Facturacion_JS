@@ -27,28 +27,21 @@ async function unloaded(event){
     }
 }
 
-
 function setupEventListeners() {
     fetchAndList();
 }
 
 function fetchAndList() {
     //Quitar comentarios en caso de que se quiera probar con el servidor
-
-    /*const request = new Request(api, { method: 'GET', headers: {} });
-    (async () => {
+    const request = new Request(api+"/cargar/rechazados", {method: 'GET', headers: { }});
+    (async ()=>{
         const response = await fetch(request);
-        if (!response.ok) {
-            errorMessage(response.status);
-            return;
-        }
+        if (!response.ok) {errorMessage(response.status);return;}
         const data = await response.json();
         console.log(data); // Verificar la respuesta
-        state.list = data;
+        state.proveedores = data;
         renderList();
-        console.log(state.list);
-    })();*/
-    renderList();
+    })();
 }
 
 function renderList() {
@@ -58,28 +51,30 @@ function renderList() {
 }
 
 function renderListItem(listado, item) {
-    if(!item.estado){
-      var tr = document.createElement("tr");
-    var estadoTexto = item.estado ? "Aceptado" : "Rechazado";
-    tr.innerHTML = `
+    if (!item.estado) {
+        var tr = document.createElement("tr");
+        tr.innerHTML = `
         <td class='cedula'>${item.cedula}</td>
         <td class='nombre'>${item.nombre}</td>
-        <td class='estado'>${estadoTexto}</td>
-        <td class='aprobar'><img src='/images/accept.png'></td>
-    `;
-    tr.querySelector(".aprobar").addEventListener("click", function() {
-        aprobar(item, tr);
-    });
-    listado.appendChild(tr);
+        <td class='estado'>Rechazado</td></td>
+        <td class='rechazar'><img src='/images/delete.png'></td>    `;
+        tr.querySelector(".rechazar").addEventListener("click", function () {
+            aceptar(item, tr);
+        });
+        listado.appendChild(tr);
     }
+    /*  Si se desea agregar, yo lo quite para que no se ve tan grande, si se agrega tambien hacerlo en el HTML
+    <td className='correo'>${item.correo}</td>
+    <td className='telefono'>${item.telefono}</td>*/
 }
 
-/*function aprobar(item, row) {
-    //item.estado = true; esto se cambia en el server
+
+function aceptar(proveedor, row) {
+    //proveedor.estado = false; esto se cambia en el server
     let request = new Request(api + `/aceptar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
+        body: JSON.stringify(proveedor)
     });
     (async () => {
         const response = await fetch(request);
@@ -87,42 +82,9 @@ function renderListItem(listado, item) {
             errorMessage(response.status);
             return;
         }
+        alert("Proveedor " + proveedor.cedula +" aceptado exitosamente");
         fetchAndList();
     })();
-}*/
-
-//Metodos creados para probarlo con el JS
-
-/*function renderListItem(listado, item) {
-    if (!item.estado) {  // Solo agregar si el estado es rechazado (false)
-        var tr = document.createElement("tr");
-        var estadoTexto = item.estado ? "Aceptado" : "Rechazado";
-        tr.innerHTML = `
-            <td class='cedula'>${item.cedula}</td>
-            <td class='nombre'>${item.nombre}</td>
-            <td class='estado'>${estadoTexto}</td>
-            <td class='aprobar'><img src='/images/accept.png'></td>
-        `;
-        tr.querySelector(".aprobar").addEventListener("click", function() {
-            aprobar(item, tr);
-        });
-        listado.appendChild(tr);
-    }
-}*/
-
-function aprobar(item, row) {
-    item.estado = true;
-    renderList();
-}
-
-
-function load_item(){
-    state.item={
-        cedula:document.getElementById("cedula").value,
-        nombre:document.getElementById("nombre").value,
-        correo: document.getElementById("correo").value,
-        telefono: document.getElementById("telefono").value
-    };
 }
 
 function errorMessage(status) {

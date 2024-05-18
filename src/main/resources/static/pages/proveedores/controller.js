@@ -18,7 +18,6 @@ async function loaded(event) {
         state = JSON.parse(state_json);
         renderList();
     }
-
 }
 
 async function unloaded(event){
@@ -33,20 +32,15 @@ function setupEventListeners() {
 
 function fetchAndList() {
     //Quitar comentarios en caso de que se quiera probar con el servidor
-    /*const request = new Request(api, { method: 'GET', headers: {} });
-    (async () => {
+    const request = new Request(api+"/cargar/acepatdos", {method: 'GET', headers: { }});
+    (async ()=>{
         const response = await fetch(request);
-        if (!response.ok) {
-            errorMessage(response.status);
-            return;
-        }
+        if (!response.ok) {errorMessage(response.status);return;}
         const data = await response.json();
         console.log(data); // Verificar la respuesta
-        state.list = data;
+        state.proveedores = data;
         renderList();
-        console.log(state.list);
-    })();*/
-    renderList();
+    })();
 }
 
 function renderList() {
@@ -73,12 +67,8 @@ function renderListItem(listado, item) {
     <td className='telefono'>${item.telefono}</td>*/
 }
 
-function rechazar(item, row) {
-    item.estado = false;
-    renderList();
-}
 
-/*function rechazar(proveedor, row) {
+function rechazar(proveedor, row) {
     //proveedor.estado = false; esto se cambia en el server
     let request = new Request(api + `/rechazar`, {
         method: 'POST',
@@ -91,9 +81,10 @@ function rechazar(item, row) {
             errorMessage(response.status);
             return;
         }
+        alert("Proveedor " + proveedor.cedula +" rechazado exitosamente");
         fetchAndList();
     })();
-}*/
+}
 
 
 function errorMessage(status) {

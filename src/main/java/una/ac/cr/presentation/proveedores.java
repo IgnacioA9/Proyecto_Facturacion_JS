@@ -3,10 +3,15 @@ package una.ac.cr.presentation;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import una.ac.cr.data.ProductosRepository;
+import una.ac.cr.data.ProveedoresProductosRepository;
+import una.ac.cr.data.ProveedoresRepository;
 import una.ac.cr.logic.*;
+import una.ac.cr.security.UserDetailsImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +22,9 @@ public class proveedores {
     @Autowired
     private Service service;
 
+    @Autowired
+    ProveedoresRepository proveedoresRepository;
+
     /*Metodos requeridos
      *-Mostrar todos los proveedores
      *-Aceptar proveedor
@@ -24,19 +32,37 @@ public class proveedores {
      *-Rechazar proveedor
      *-Editar proveedor
      */
-    
-    @GetMapping
-    public List<Proveedores> read(){
-        return service.proveedoresAll();
+
+    @GetMapping("/cargar/acepatdos")
+    public Iterable<Proveedores> read(){
+        List<Proveedores> lista = proveedoresRepository.findAllByEstadoTrue();
+        for (Proveedores proveedor:lista){
+            proveedor.setAlmacenasByNumeroid(null);
+            proveedor.setPoseesByNumeroid(null);
+            proveedor.setTienesByNumeroid(null);
+        }
+        return lista;
+    }
+
+    @GetMapping("/cargar/rechazados")
+    public Iterable<Proveedores> readRechazados(){
+        List<Proveedores> lista = proveedoresRepository.findAllByEstadoFalse();
+        for (Proveedores proveedor:lista){
+            proveedor.setAlmacenasByNumeroid(null);
+            proveedor.setPoseesByNumeroid(null);
+            proveedor.setTienesByNumeroid(null);
+        }
+        return lista;
     }
 
     @GetMapping("/{cedula}")
     public Proveedores read(@PathVariable String cedula){
-        try{
-            return service.proveedoresread(cedula);
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula(cedula);
+        pr.setAlmacenasByNumeroid(null);
+        pr.setPoseesByNumeroid(null);
+        pr.setTienesByNumeroid(null);
+
+        return pr;
     }
 
     @PostMapping("/aceptar")
@@ -50,16 +76,6 @@ public class proveedores {
         }
     }
 
-    @GetMapping("/aceptados")
-    public List<Proveedores> aceptados(@PathVariable String cedula){
-        try{
-            return service.proveedoresAceptados();
-
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PostMapping("/rechazar")
     public void rechazar(@RequestBody Proveedores proveedor){
         try{
@@ -70,6 +86,7 @@ public class proveedores {
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
+
     @PostMapping()
     public void edit(@RequestBody Proveedores proveedor) {
         try {
@@ -85,3 +102,6 @@ public class proveedores {
         }
     }
 }
+
+
+

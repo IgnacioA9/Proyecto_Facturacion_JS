@@ -57,9 +57,9 @@ public class Service {
     public List<Proveedores> proveedoresAll(){
         return proveedoresRepository.proveedoresAll("");
     }
-    public List<Proveedores> proveedoresAceptados(){
+    /*public List<Proveedores> proveedoresAceptados(){
         return proveedoresRepository.proveedoresAcepatados();
-    }
+    }*/
 
     //ADMINISTRADORES
     public Administradores administradoresread(String identificacion){

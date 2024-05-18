@@ -28,5 +28,7 @@ public interface ProveedoresProductosRepository extends CrudRepository<Almacena,
 
     @Query("select p from Almacena p where p.numeroprod=?1")
     Almacena almacenaSearch(int numero);
+
+    void deleteByNumeroprod(int numeroprod);
 }
 

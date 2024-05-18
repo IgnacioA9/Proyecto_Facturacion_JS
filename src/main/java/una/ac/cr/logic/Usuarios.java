@@ -1,5 +1,6 @@
 package una.ac.cr.logic;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Objects;
 @Builder
 @AllArgsConstructor
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Entity
 public class Usuarios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

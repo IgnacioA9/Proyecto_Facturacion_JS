@@ -12,6 +12,8 @@ import una.ac.cr.data.ProveedoresProductosRepository;
 import una.ac.cr.data.ProveedoresRepository;
 import una.ac.cr.logic.*;
 import una.ac.cr.security.UserDetailsImp;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +43,9 @@ public class productos {
 
     @GetMapping("/cargar")
     public Iterable<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
-        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-        //List<Productos> lista = proveedoresProductosRepository.findProductosByProveedorCedula("slee");
-        List<Productos> lista = (List<Productos>) productosRepository.findAll();
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+        List<Productos> lista = proveedoresProductosRepository.findProductosByProveedorCedula("slee");
+        //List<Productos> lista = (List<Productos>) productosRepository.findAll();
         for (Productos producto:lista){
             producto.setAlmacenaByNumeroid(null);
             producto.setContienesByNumeroid(null);
@@ -51,71 +53,79 @@ public class productos {
         return lista;
     }
 
-    /*@GetMapping("/{codigo}")
-    public Productos read(@PathVariable String codigo){
-        try{
-            return service.buscarProducto(codigo);
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    @GetMapping("/search/{codigo}")
+    public List<Productos> searchByCodigo(@RequestParam String codigo) {
+        try {
+            List<Productos> productos = productosRepository.buscarPorNombre(codigo);
+            if (!productos.isEmpty()) {
+                return productos;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron productos con ese código");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar los productos", e);
         }
-    }*/
-
-    @GetMapping("/search")
-    public Iterable<Productos> findByName(@RequestParam String nombre){
-        Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-        List<Productos> lista = proveedoresProductosRepository.searchByProveedorAndName(pr.getCedula(),nombre);
-        for (Productos producto : lista){
-            producto.setAlmacenaByNumeroid(null);
-            producto.setContienesByNumeroid(null);
-        }
-        return lista;
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody Productos producto){
+    public void create(@AuthenticationPrincipal UserDetailsImp user ,@RequestBody Productos producto){
         try{
-            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
             Productos p = productosRepository.obtenerProducto(producto.getCodigo());
-            if(p == null){
+            if(p == null && producto.getNumeroid() == 0){
                 p = productosRepository.save(producto);
                 Almacena almacena = new Almacena();
                 almacena.setNumeroprod(p.getNumeroid());
-                //almacena.setProveedoresByNumeroprovee(pr);
+                almacena.setProveedoresByNumeroprovee(pr);
                 proveedoresProductosRepository.save(almacena);
+            } else if (producto.getNumeroid() > 0 && p != null) {
+                productosRepository.save(producto);
+            }else {
+                throw  new ResponseStatusException(HttpStatus.CONFLICT);
             }
         }catch (Exception ex){
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
     //@AuthenticationPrincipal UserDetailsImp user,
-    @PostMapping("/edit/{codigo}")
-    public Productos edit (@PathVariable String codigo){
-        try{
-            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-            Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo(pr.getCedula(),codigo);
-            p.setAlmacenaByNumeroid(null);
-            p.setContienesByNumeroid(null);
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Productos producto) {
+        try {
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+            Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo(user.getUsername(),producto.getCodigo());
+            if (p != null) {
+                p.setNombre(producto.getNombre());
+                p.setPrecio(producto.getPrecio());
+                productosRepository.save(p);
 
-            return p;
-        }catch (Exception ex){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+                Almacena almacena = new Almacena();
+                almacena.setNumeroprod(p.getNumeroid());
+                almacena.setProveedoresByNumeroprovee(pr);
+                proveedoresProductosRepository.save(almacena);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al editar el producto", e);
         }
     }
 
+    @Transactional
     @DeleteMapping("/delete/{codigo}")
-    public void delete(@PathVariable String codigo){
-        try{
-            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-                Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo("slee",codigo);
-            if(p == null && p.getNumeroid()==0){
-                Almacena almacena = new Almacena();
-                almacena.setNumeroprod(p.getNumeroid());
-                //almacena.setProveedoresByNumeroprovee(pr);
-                proveedoresProductosRepository.delete(almacena);
+    public void delete(@PathVariable String codigo) {
+        try {
+            Productos p = productosRepository.obtenerProducto(codigo);
+            if (p != null) {
+                // Eliminar las relaciones asociadas al producto
+                proveedoresProductosRepository.deleteByNumeroprod(p.getNumeroid());
+
+                // Eliminar el producto
                 productosRepository.delete(p);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado");
             }
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar el producto", e);
         }
     }
 }

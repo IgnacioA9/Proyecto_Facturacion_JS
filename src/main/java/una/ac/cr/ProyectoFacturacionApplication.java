@@ -60,7 +60,7 @@ public class ProyectoFacturacionApplication {
                         .requestMatchers("/api/usuarios").permitAll()
                         .requestMatchers("/api/login/login").permitAll()
                         .requestMatchers("/api/login/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("PROVEE")
+                        .requestMatchers(HttpMethod.POST,"/api/**").hasAnyAuthority("PROVEE","ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/**").hasAnyAuthority("PROVEE")
                         .requestMatchers("/api/**").hasAnyAuthority("ADMIN","PROVEE")
                         .requestMatchers("/**").permitAll()

@@ -16,6 +16,11 @@ public interface ProveedoresRepository extends CrudRepository<Proveedores, Strin
 
     @Query("select p from Proveedores p where p.cedula like %?1% and p.estado=false")
     List<Proveedores> proveedoresAll(String input);
+    // Método para obtener todos los proveedores con estado false
+    @Query("select p from Proveedores p where p.estado=false")
+    List<Proveedores> findAllByEstadoFalse();
+
+    // Método para obtener todos los proveedores con estado true
     @Query("select p from Proveedores p where p.estado=true")
-    List<Proveedores> proveedoresAcepatados();
+    List<Proveedores> findAllByEstadoTrue();
 }
