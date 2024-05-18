@@ -10,22 +10,10 @@ var state = {
     proveedores: [],
     provedor: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
 
-    productos: [
-        {codigo: "001", nombre: "Manzana", precio: "0.50"},
-        {codigo: "002", nombre: "Banana", precio: "0.30"},
-        {codigo: "003", nombre: "Naranja", precio: "0.40"},
-        {codigo: "004", nombre: "Fresa", precio: "1.20"},
-        {codigo: "005", nombre: "Uva", precio: "2.00"}
-    ],
+    productos: [],
     producto: {codigo: "", nombre: "", precio: ""},
 
-    clientes: [
-        {cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234"},
-        {cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678"},
-        {cedula: "1122334455", nombre: "Carlos Ramirez", correo: "carlos.ramirez@example.com", telefono: "555-9101"},
-        {cedula: "5566778899", nombre: "Ana Torres", correo: "ana.torres@example.com", telefono: "555-1122"},
-        {cedula: "6677889900", nombre: "Luisa Fernandez", correo: "luisa.fernandez@example.com", telefono: "555-3344"}
-    ],
+    clientes: [],
     cliente: {cedula: "", nombre: "", correo: "", telefono: ""},
 
     proveedorU: {cedula: "slee", nombre: "Proveedor Slee", correo: "Slee@gmai.com", telefono: "999", estado: "1"},

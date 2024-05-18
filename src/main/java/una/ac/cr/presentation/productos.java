@@ -22,9 +22,6 @@ import java.util.List;
 @RequestMapping("/api/productos")
 public class productos {
     @Autowired
-    private Service service;
-
-    @Autowired
     ProveedoresRepository proveedoresRepository;
 
     @Autowired
@@ -44,7 +41,7 @@ public class productos {
     @GetMapping("/cargar")
     public Iterable<Productos> read(@AuthenticationPrincipal UserDetailsImp user){
         Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
-        List<Productos> lista = proveedoresProductosRepository.findProductosByProveedorCedula("slee");
+        List<Productos> lista = proveedoresProductosRepository.findProductosByProveedorCedula(user.getUsername());
         //List<Productos> lista = (List<Productos>) productosRepository.findAll();
         for (Productos producto:lista){
             producto.setAlmacenaByNumeroid(null);

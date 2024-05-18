@@ -43,20 +43,15 @@ function setupEventListeners() {
         popup.classList.remove("active");
     });
 
-
-
     // Funcion para guardar producto cuando se hace click en el boton guardar
     saveBtn.addEventListener("click",add);
     // Funcion para editar producto cuando se hace click en el boton editar
     editBtn.addEventListener("click", edit);
     // Funcion para buscar producto cuando se hace click en el boton buscar
-    searchBtn.addEventListener("click",search);
-
-    /*
-    // Funcion para guardar producto cuando se hace click en el boton guardar
-    saveBtn.addEventListener("click",addProduct);
-    // Funcion para editar producto cuando se hace click en el boton editar
-    //editBtn.addEventListener("click", saveEdit);*/
+    searchBtn.addEventListener("click", () => {
+        const searchTerm = document.getElementById("busqueda").value;
+        search(searchTerm);
+    });
 
     fetchAndList();
 }
@@ -94,10 +89,10 @@ function renderListItem(listado, item) {
     `;
     // Asignar eventos a los botones de editar y eliminar
     tr.querySelector(".edit").addEventListener("click", function () {
-        showFormEdit();
+        showFormEdit(item);
     });
     tr.querySelector(".remove").addEventListener("click", function () {
-        remove(item.codigo);
+        remove(item.cedula);
     });
     // Agregar el <tr> al listado
     listado.appendChild(tr);
@@ -117,16 +112,16 @@ function add(){
         NoshowForm();
         await fetchAndList();
         console.log("Contenido de la lista:");
-        console.log(state.productos);
+        console.log(state.clientes);
     })();
 }
 
 function edit(){
-    //load_item();
+    load_item();
     if(!validate_item()) return;
-    let request = new Request(api+`/edit/${state.cliente.codigo}`, {method: 'POST',
+    let request = new Request(api+`/edit`, {method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(state.item)});
+        body: JSON.stringify(state.cliente)});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
@@ -135,58 +130,48 @@ function edit(){
     })();
 }
 
-function remove(id){
-    let request = new Request(backend+`/delete/${id}`,
-        {method: 'DELETE', headers: {}});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
-        fetchAndList();
+function remove(id) {
+    let request = new Request(api+`/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    (async () => {
+        try {
+            const response = await fetch(request);
+            if (!response.ok) {
+                errorMessage(response.status);
+                return;
+            }
+            fetchAndList();
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+            errorMessage('Error al eliminar el producto');
+        }
     })();
 }
 
-function search(){
-    nombreBusqueda = document.getElementById("busqueda").value;
-    const request = new Request(api+`/search?nombre=${nombreBusqueda}`,
-        {method: 'GET', headers: { }});
+function search(id){
+    const request = new Request(api+`/search/${id}`, {method: 'GET', headers: {}});
     (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
-        state.list = await response.json();
-        render_list();
+        try {
+            const response = await fetch(request);
+            if (!response.ok) {
+                errorMessage(response.status);
+                return;
+            }
+            const data = await response.json();
+            console.log(data); // Verificar la respuesta
+            state.clientes = data;
+            render_list();
+            console.log(state.clientes);
+        } catch (error) {
+            console.error('Error al buscar el producto:', error);
+            errorMessage('Error al buscar el producto');
+        }
     })();
 }
-
-//Funciones del CRUD con JS
-
-function addProduct() {
-    // Obtener los valores del formulario
-    var nuevoCedula = document.getElementById('cedula').value;
-    var nuevoNombre = document.getElementById('nombre').value;
-    var nuevoCorreo = document.getElementById('correo').value;
-    var nuevoTelefono = document.getElementById('telefono').value;
-
-    // Crear un nuevo producto
-    var nuevoCliente = {
-        cedula: nuevoCedula,
-        nombre: nuevoNombre,
-        correo:nuevoCorreo,
-        telefono:nuevoTelefono
-    };
-
-    // Agregar el nuevo producto a la lista de productos
-    state.clientes.push(nuevoCliente);
-
-    // Cerrar el formulario y volver a renderizar la lista
-    NoshowForm();
-    render_list();
-}
-
-function removeFromList(cedula) {
-    state.clientes = state.clientes.filter(cliente => cliente.cedula !== cedula);
-    render_list();
-}
-
 
 //Validaciones
 
@@ -212,7 +197,6 @@ function validate_item(){
     }
     return !error;
 }
-
 
 function load_item(){
     state.cliente={
@@ -245,7 +229,7 @@ function showForm() {
     document.getElementById('guardarProductoBtn').classList.remove('invisible');
 }
 
-function showFormEdit() {
+function showFormEdit(item) {
     // Mostrar el popup
     const popup = document.querySelector(".popup");
     popup.classList.add("active");

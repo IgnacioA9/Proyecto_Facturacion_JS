@@ -29,4 +29,6 @@ public interface ProveedorClientesRepository extends CrudRepository<Posee, Strin
     Clientes searchByProveedorAndCedula(String idProveedor, String cedula);
     @Query("select p from Posee p where p.numeroclien=?1")
     Posee poseeSearch(int numero);
+
+    void deleteByNumeroclien(int numerocli);
 }

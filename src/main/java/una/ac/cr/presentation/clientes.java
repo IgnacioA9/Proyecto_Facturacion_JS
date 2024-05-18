@@ -4,6 +4,7 @@ package una.ac.cr.presentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import una.ac.cr.data.*;
@@ -15,9 +16,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clientes")
 public class clientes {
-    @Autowired
-    private Service service;
-
     @Autowired
     ProveedoresRepository proveedoresRepository;
 
@@ -37,9 +35,8 @@ public class clientes {
 
     @GetMapping("/cargar")
     public Iterable<Clientes> read(@AuthenticationPrincipal UserDetailsImp user){
-        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-        //List<Clientes> lista = proveedorClientesRepository.searchByProveedor("slee");
-        List<Clientes> lista = (List<Clientes>) clientesRepository.findAll();
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+        List<Clientes> lista = proveedorClientesRepository.searchByProveedor(user.getUsername());
         for (Clientes cliente:lista){
             cliente.setAdquieresByNumeroid(null);
             cliente.setPoseeByNumeroid(null);
@@ -47,72 +44,80 @@ public class clientes {
         return lista;
     }
 
-    /*@GetMapping("/{codigo}")
-    public Productos read(@PathVariable String codigo){
-        try{
-            return service.buscarProducto(codigo);
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    @GetMapping("/search/{cedula}")
+    public Clientes searchByCedula(@RequestParam String cedula) {
+        try {
+            Clientes clientes = clientesRepository.clientesread(cedula);
+            if (clientes != null) {
+                return clientes;
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se encontraron productos con ese código");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar los productos", e);
         }
-    }*/
-
-    @GetMapping("/search")
-    public Iterable<Clientes> findByName(@RequestParam String nombre){
-        //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-        //List<Clientes> lista = proveedorClientesRepository.searchByProveedor(pr.getCedula(),nombre);
-        List<Clientes> lista = clientesRepository.clientesAll();
-        for (Clientes cliente : lista){
-            cliente.setAdquieresByNumeroid(null);
-            cliente.setPoseeByNumeroid(null);
-        }
-        return lista;
     }
 
     @PostMapping("/create")
-    public void create(@RequestBody Clientes cliente){
+    public void create(@AuthenticationPrincipal UserDetailsImp user ,@RequestBody Clientes cliente){
         try{
-            //Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
             Clientes c = clientesRepository.clientesread(cliente.getCedula());
-            if(c == null){
+            if(c == null && cliente.getNumeroid() == 0){
                 c = clientesRepository.save(cliente);
                 Posee posee = new Posee();
                 posee.setNumeroclien(c.getNumeroid());
-                //posee.setProveedoresByNumeroprovee(pr);
+                posee.setProveedoresByNumeroprovee(pr);
                 proveedorClientesRepository.save(posee);
+            } else if (cliente.getNumeroid() > 0 && c != null) {
+                clientesRepository.save(cliente);
+            }else {
+                throw  new ResponseStatusException(HttpStatus.CONFLICT);
             }
         }catch (Exception ex){
             throw  new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
     //@AuthenticationPrincipal UserDetailsImp user,
-    @PostMapping("/edit/{codigo}")
-    public Clientes  edit (@PathVariable String codigo){
-        try{
-            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(pr.getCedula(),codigo);
-            c.setAdquieresByNumeroid(null);
-            c.setPoseeByNumeroid(null);
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user,@RequestBody Clientes cliente) {
+        try {
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(user.getUsername(),cliente.getCedula());
+            if (c != null) {
+                c.setNombre(cliente.getNombre());
+                c.setCorreo(cliente.getCorreo());
+                c.setTelefono(cliente.getTelefono());
+                clientesRepository.save(c);
 
-            return c;
-        }catch (Exception ex){
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND);
+                Posee posee = new Posee();
+                posee.setNumeroclien(c.getNumeroid());
+                posee.setProveedoresByNumeroprovee(pr);
+                proveedorClientesRepository.save(posee);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado");
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al editar el producto", e);
         }
     }
 
+    @Transactional
     @DeleteMapping("/delete/{codigo}")
-    public void delete(@PathVariable String codigo){
-        try{
-            Proveedores pr = proveedoresRepository.findProveedoresByCedula("slee");
-            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(pr.getCedula(),codigo);
-            if(c == null && c.getNumeroid()==0){
-                Posee posee = new Posee();
-                posee.setNumeroclien(c.getNumeroid());
-                //posee.setProveedoresByNumeroprovee(pr);
-                proveedorClientesRepository.delete(posee);
+    public void delete(@PathVariable String codigo) {
+        try {
+            Clientes c = clientesRepository.clientesread(codigo);
+            if (c != null) {
+                // Eliminar las relaciones asociadas al producto
+                proveedorClientesRepository.deleteByNumeroclien(c.getNumeroid());
+
+                // Eliminar el producto
                 clientesRepository.delete(c);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado");
             }
-        }catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al eliminar el producto", e);
         }
     }
 }

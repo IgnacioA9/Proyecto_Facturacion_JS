@@ -182,75 +182,26 @@ function search(id){
     })();
 }
 
-//Funciones del CRUD con JS
-
-function addProduct() {
-    // Obtener los valores del formulario
-    var nuevoCodigo = document.getElementById('codigo').value;
-    var nuevoNombre = document.getElementById('nombre').value;
-    var nuevoPrecio = document.getElementById('precio').value;
-
-    // Crear un nuevo producto
-    var nuevoProducto = {
-        codigo: nuevoCodigo,
-        nombre: nuevoNombre,
-        precio: nuevoPrecio
-    };
-
-    // Agregar el nuevo producto a la lista de productos
-    state.productos.push(nuevoProducto);
-
-    // Cerrar el formulario y volver a renderizar la lista
-    NoshowForm();
-    render_list();
-}
-
-function saveEdit(codigo) {
-    // Obtener los nuevos valores del formulario
-    var nuevoCodigo = document.getElementById('codigo').value;
-    var nuevoNombre = document.getElementById('nombre').value;
-    var nuevoPrecio = document.getElementById('precio').value;
-
-    // Encontrar el producto y actualizarlo
-    var producto = state.productos.find(p => p.codigo === codigo);
-    if (producto) {
-        producto.codigo = nuevoCodigo;
-        producto.nombre = nuevoNombre;
-        producto.precio = nuevoPrecio;
-    }
-    // Cerrar el formulario y volver a renderizar la lista
-    NoshowForm();
-    render_list();
-}
-
-function removeFromList(codigo) {
-    // Filtrar el producto de la lista
-    state.productos = state.productos.filter(p => p.codigo !== codigo);
-    // Volver a renderizar la lista
-    render_list();
-}
-
 //Validaciones
 
 function validate_item(){
     var error=false;
     document.querySelectorAll('input').forEach( (i)=> {i.classList.remove("invalid");});
 
-    if (state.producto.codigo.length==0){
+    if (state.producto.codigo.length===0){
         document.querySelector("#codigo").classList.add("invalid");
         error=true;
     }
-    if (state.producto.nombre.length==0){
+    if (state.producto.nombre.length===0){
         document.querySelector("#nombre").classList.add("invalid");
         error=true;
     }
-    if (state.producto.precio.length==0){
+    if (state.producto.precio.length===0){
         document.querySelector("#precio").classList.add("invalid");
         error=true;
     }
     return !error;
 }
-
 
 function load_item(){
     state.producto={
