@@ -9,46 +9,63 @@
     padding: 65px 0 0 35px;
 }
 
-.content-table{
-    border-collapse: collapse;
-    margin: 0;
-    width: 100%;
-    font-size: 0.7cm;
-    min-width: 200px;
-    overflow: hidden;
+.table-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 20px 0;
 }
 
-.content-table thead tr{
+/* Estilo del scrollbar */
+.table-container::-webkit-scrollbar {
+    width: 12px; /* Ancho del scrollbar */
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color de fondo del track */
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888; /* Color del thumb */
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Cambio de color al pasar el cursor por encima */
+}
+
+
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.content-table thead {
     background-color: transparent;
     color: #fff;
-    text-align: left;
-    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1;  /* Asegura que el encabezado se mantenga arriba al hacer scroll */
 }
 
-.content-table th, .content-table td{
+.content-table th, .content-table td {
     padding: 5px 10px;
+    text-align: center; /* Centra horizontalmente el contenido */
+    vertical-align: middle; /* Centra verticalmente el contenido */
 }
 
-.content-table thead tr:first-of-type{
-    border-top: 5px solid #fff;
-}
-
-.content-table tbody tr{
+.content-table tbody tr {
     border-bottom: 1px solid gray;
 }
 
-.content-table tbody tr:last-of-type{
-    border-bottom: 5px solid #fff;
-}
-
 .popup {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    width: 600px;
-    padding: 20px 30px;
+    width: 700px;
+    max-height: 550px;
+    padding: 5px 10px;
+    margin-top: 30px;
     border-radius: 16px;
     transition: opacity 200ms ease-in-out;
     z-index: -1;
@@ -69,27 +86,16 @@
     z-index: 9999;
 }
 
-.popup .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 15px;
-    height: 15px;
-    background: #fff;
-    color: #222;
-    border-radius: 15px;
-    cursor: pointer;
-}
-
 .popup .form h2 {
     text-align: center;
     color: #fff;
-    margin: 10px 0px 20px;
+    margin: auto;
     font-size: 25px;
 }
 
 .popup .form .form-element {
-    margin: 15px 0px;
+    margin: auto;
+    padding-block-end: 5px;
 }
 
 .popup .form .form-element label {

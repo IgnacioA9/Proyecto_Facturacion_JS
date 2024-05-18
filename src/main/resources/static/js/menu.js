@@ -23,14 +23,7 @@ var state = {
 
     administrador: {nombre: "jsanchez"},
 
-    facturas: [
-        { numero: "001", cantidadT: "2", monto: "30.00", fecha: "2023-05-15",
-            contiene: [{ codigo: "001", cantidad: 5 }, { codigo: "002", cantidad: 10 }], cliente: { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234" }
-        },
-        {numero: "002", cantidadT: "1", monto: "20.00", fecha: "2023-05-16",
-            contiene: [{ codigo: "003", cantidad: 7 }], cliente: { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678" }
-        }
-    ],
+    facturas: [],
     factura: { numero: "", cantidadT: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
     }
 };
@@ -70,7 +63,6 @@ function loadUserProveedor(){
         const data = await response.json();
         console.log(data); // Verificar la respuesta
         state.proveedorU = data;
-        //console.log(state.proveedorU);
     })();
 }
 

@@ -16,7 +16,8 @@
     <div class="form">
         <h2>Facturar</h2>
         <div class="form-element">
-            <h3>Proveedor:<span id="proveedor"></span></h3>
+            <h3>Proveedor: <span id="proveedor"></span></h3>
+            <h3>Cliente: <span id="clienteFactura"></span></h3>
         </div>
         <div class="form-element">
             <a id="linkListaClientes" class="icon-link"></a>
@@ -28,20 +29,24 @@
             <input type="text" id="productoFacturas" placeholder="Producto" required>
             <button id="linkBuscarProducto" class="icon-link"></button>
         </div>
-        <br>
-        <div class="form-element-table">
-            <table class="content-table">
+        <div class="table-container">
+            <table id="listaFacturas" class="content-table">
                 <thead>
                 <tr>
                     <th>Código</th>
                     <th>Nombre</th>
                     <th>Precio</th>
+                    <th>Cantidad</th>
                     <th>Eliminar</th>
                 </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+        </div>
+        <div class="form-element">
+            <h3>Monto total: <span id="total"></span></h3>
+            <h3>Cantidad total: <span id="ctotal"></span></h3>
         </div>
         <br>
         <div class="form-element">
