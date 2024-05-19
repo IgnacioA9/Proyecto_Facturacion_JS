@@ -80,7 +80,7 @@ function render_list() {
 
     clienteSpan.textContent = state.factura.cliente.nombre;
     total.textContent = state.factura.monto;
-    ctotal.textContent = state.factura.cantidadT;
+    ctotal.textContent = state.factura.cantidad;
     listado.innerHTML = "";
 
 
@@ -97,7 +97,7 @@ function renderListItem(listado, item) {
         <td class='codigo'>${producto.codigo}</td>
         <td class='nombre'>${producto.nombre}</td>
         <td class='precio'>${producto.precio}</td>
-        <td class='cantidad'>${item.cantidad}</td>
+        <td class='cantidad'>${item.cantidadP}</td>
         <td class='remove'><img src='/images/delete.png' data-codigo='${producto.codigo}'></td>
         `;
         // Asignar evento al botón eliminar
@@ -109,7 +109,7 @@ function renderListItem(listado, item) {
     }
 }
 
-function addFactura(){
+function addFactura() {
     // Obtener la fecha actual del sistema
     let fechaActual = new Date();
     // Formatear la fecha actual en el formato deseado (por ejemplo, YYYY-MM-DD)
@@ -117,14 +117,31 @@ function addFactura(){
     // Asignar la fecha formateada al campo 'fecha' de la factura
     state.factura.fecha = fechaFormateada;
 
-    let request = new Request(api + "/create", {method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(state.factura)});
-    (async ()=>{
+    // Construir el objeto DTO
+    let facturaClienteDTO = {
+        factura: state.factura,
+        cliente: state.factura.cliente,
+        contiene: state.factura.contiene
+    };
+
+    let request = new Request(api + "/create", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(facturaClienteDTO)
+    });
+
+    (async () => {
         const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
     })();
+
+    clearFactura();
+    render_list();
 }
+
 
 function addCliente() {
     var cedula = document.getElementById("clienteFacturas").value;
@@ -138,10 +155,10 @@ function addCliente() {
         render_list();
     } else {
         console.log(`Cliente con cédula ${cedula} no encontrado.`);
+        window.alert("Cliente no encontrado.");
     }
 }
 
-// Función para agregar un producto a la lista contiene de la factura actual
 function addProductos() {
     var codigo = document.getElementById("productoFacturas").value;
     const producto = state.productos.find(producto => producto.codigo === codigo);
@@ -150,17 +167,17 @@ function addProductos() {
         const item = state.factura.contiene.find(item => item.codigo === codigo);
 
         if (item) {
-            item.cantidad += 1;
+            item.cantidadP += 1;
         } else {
-            state.factura.contiene.push({ codigo: producto.codigo, cantidad: 1 });
+            state.factura.contiene.push({ codigo: producto.codigo, cantidadP: 1 });
         }
 
-        state.factura.cantidadT = state.factura.contiene.reduce((total, item) => total + item.cantidad, 0);
+        state.factura.cantidad = state.factura.contiene.reduce((total, item) => total + item.cantidadP, 0);
 
         // Actualizar el monto total de la factura
         state.factura.monto = state.factura.contiene.reduce((total, item) => {
             const prod = state.productos.find(prod => prod.codigo === item.codigo);
-            return total + (prod.precio * item.cantidad);
+            return total + (prod.precio * item.cantidadP);
         }, 0).toFixed(2);
 
         console.log(`Producto agregado: ${JSON.stringify(producto)}`);
@@ -170,6 +187,7 @@ function addProductos() {
 
     } else {
         console.log(`Producto con código ${codigo} no encontrado.`);
+        window.alert("Producto no encontrado.");
     }
 }
 
@@ -177,23 +195,37 @@ function removeFromFactura(codigo) {
     const index = state.factura.contiene.findIndex(item => item.codigo === codigo);
 
     if (index !== -1) {
-        const cantidad = state.factura.contiene[index].cantidad;
+        const cantidad = state.factura.contiene[index].cantidadp;
         const producto = state.productos.find(prod => prod.codigo === codigo);
 
         // Si la cantidad es mayor a 1, reducir la cantidad en 1
         if (cantidad > 1) {
-            state.factura.contiene[index].cantidad -= 1;
+            state.factura.contiene[index].cantidadP -= 1;
             state.factura.monto = (parseFloat(state.factura.monto) - parseFloat(producto.precio)).toFixed(2);
-            state.factura.cantidadT -= 1;
+            state.factura.cantidad -= 1;
         } else {
             state.factura.contiene.splice(index, 1);
             state.factura.monto = (parseFloat(state.factura.monto) - (parseFloat(producto.precio) * cantidad)).toFixed(2);
-            state.factura.cantidadT -= cantidad;
+            state.factura.cantidad -= cantidad;
         }
     }
     render_list();
 }
 
-
+function clearFactura() {
+    state.factura = {
+        numero: "",
+        cantidad: "",
+        monto: "",
+        fecha: "",
+        contiene: [],
+        cliente: {
+            cedula: "",
+            nombre: "",
+            correo: "",
+            telefono: ""
+        }
+    };
+}
 
 

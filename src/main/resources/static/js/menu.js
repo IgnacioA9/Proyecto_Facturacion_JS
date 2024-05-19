@@ -24,7 +24,7 @@ var state = {
     administrador: {nombre: "jsanchez"},
 
     facturas: [],
-    factura: { numero: "", cantidadT: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
+    factura: { numero: "", cantidad: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
     }
 };
 
