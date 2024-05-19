@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import una.ac.cr.data.UserRepository;
 import una.ac.cr.logic.*;
 import una.ac.cr.security.UserDetailsImp;
 
@@ -16,6 +17,9 @@ public class usuarios {
     @Autowired
     private Service service;
 
+    @Autowired
+    UserRepository userRepository;
+
     @GetMapping
     public List<Usuarios> read(){
         return service.findAll();
@@ -25,10 +29,14 @@ public class usuarios {
         try {
             // Lee un usuario existente por identificación y contraseña
             Usuarios usuarioRead = service.usuariosRead(usuarios.getIdentificacion(), usuarios.getContrasena());
-
+            User u = new User();
             // Si el usuario no existe, lo crea
             if (usuarioRead == null) {
                 service.usuarioscreate(usuarios);
+                u.setId(usuarios.getIdentificacion());
+                u.setPassword(usuarios.getContrasena());
+                u.setRol(usuarios.getRol());
+                userRepository.addUser(u);
                 if ("PROVEE".equals(usuarios.getRol())) {
                     Proveedores proveedor = Proveedores.builder()
                             .cedula(usuarios.getIdentificacion())

@@ -23,6 +23,10 @@ public class UserRepository {
         var encoder = new BCryptPasswordEncoder();
         list.add(new User("jsanchez","{bcrypt}"+encoder.encode("1"),"ADMIN"));
         list.add(new User("slee","{bcrypt}"+encoder.encode("1"),"PROVEE"));
+        list.add(new User("402600261","{bcrypt}"+encoder.encode("777"),"PROVEE"));
     }
 
+    public void addUser(User user) {
+        list.add(user);
+    }
 }
