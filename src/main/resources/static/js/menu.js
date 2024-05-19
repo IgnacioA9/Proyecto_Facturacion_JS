@@ -36,8 +36,14 @@ async function checkUser() {
         const request = new Request(`${api_login}/current-user`, { method: 'GET' });
         const response = await fetch(request);
         if (response.ok) {
-            loginstate.logged = true;
-            loginstate.user = await response.json();
+            const user = await response.json();
+            if (user.estado === 'aceptado') {
+                loginstate.logged = true;
+                loginstate.user = user;
+            } else {
+                loginstate.logged = false;
+                loginstate.user = { id: "", rol: "", estado: "" };
+            }
         } else {
             loginstate.logged = false;
         }
@@ -45,6 +51,7 @@ async function checkUser() {
         console.error('Error checking user:', error);
     }
 }
+
 
 async function menu() {
     await checkUser();
@@ -169,7 +176,7 @@ async function login() {
     };
 
     if (!user.id || !user.password) {
-        errorMessage('Please fill out both fields');
+        errorMessage('Por favor, llene ambos campos');
         return;
     }
 
@@ -187,9 +194,15 @@ async function login() {
         }
 
         const data = await response.json();
+        if (data.estado !== 'aceptado') {
+            errorMessage('Usuario no aceptado');
+            return;
+        }
+
         loginstate.logged = true;
         loginstate.user.id = user.id;
         loginstate.user.rol = data.rol;
+        loginstate.user.estado = data.estado;
 
         switch (loginstate.user.rol) {
             case "ADMIN":
