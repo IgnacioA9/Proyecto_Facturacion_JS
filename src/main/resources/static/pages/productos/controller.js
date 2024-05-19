@@ -58,13 +58,10 @@ function setupEventListeners() {
         search(searchTerm);
     });
 
-
     /*
     // Funcion para guardar producto cuando se hace click en el boton guardar
     saveBtn.addEventListener("click",addProduct);
     */
-
-
     fetchAndList();
 }
 
@@ -163,27 +160,19 @@ function remove(id) {
     })();
 }
 
-
-function search(id){
-    const request = new Request(api+`/search/${id}`, {method: 'GET', headers: {}});
-    (async ()=>{
-        try {
-            const response = await fetch(request);
-            if (!response.ok) {
-                errorMessage(response.status);
-                return;
-            }
-            const data = await response.json();
-            console.log(data); // Verificar la respuesta
-            state.productos = data;
-            render_list();
-            console.log(state.productos);
-        } catch (error) {
-            console.error('Error al buscar el producto:', error);
-            errorMessage('Error al buscar el producto'); // Muestra un mensaje de error apropiado
-        }
-    })();
+function search(searchTerm) {
+    var filteredProducts = state.productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    render_filtered_list(filteredProducts);
 }
+
+function render_filtered_list(filteredProducts) {
+    var listado = document.querySelector('#listaProductos tbody');
+    listado.innerHTML = "";
+    filteredProducts.forEach(item => renderListItem(listado, item));
+}
+
 
 //Validaciones
 
