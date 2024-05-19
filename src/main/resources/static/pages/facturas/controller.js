@@ -28,21 +28,30 @@ async function unloaded(event){
 //Cargar la lista y renderizarla
 
 function fetchAndList(){
-    // Asingar el nombre del proveedor a la tabla
-    const proveedorSpan = document.getElementById("proveedor");
-    proveedorSpan.textContent = " " + loginstate.user.id;
-
-    /*const request = new Request(api, {method: 'GET', headers: { }});
+    const request = new Request(api + `/cargar`, {method: 'GET', headers: { }});
     (async ()=>{
         const response = await fetch(request);
         if (!response.ok) {errorMessage(response.status);return;}
         const data = await response.json();
         console.log(data); // Verificar la respuesta
-        state.list = data;
-        renderList();
-        console.log(state.list);
-    })();*/
-    render_list();
+
+        // Aquí asumimos que `data` es un array de FacturaClienteDTO
+        state.facturas = data.map(item => ({
+            numero: item.factura.numero,
+            cantidad: item.factura.cantidad,
+            monto: item.factura.monto,
+            fecha: item.factura.fecha,
+            contiene: item.contiene || [],
+            cliente: {
+                cedula: item.cliente.cedula,
+                nombre: item.cliente.nombre,
+                correo: item.cliente.correo,
+                telefono: item.cliente.telefono
+            }
+        }));
+        render_list();
+        console.log(state.facturas);
+    })();
 }
 
 function render_list() {
@@ -55,7 +64,7 @@ function renderListItem(listado, item) {
     var tr = document.createElement("tr");
     tr.innerHTML = `
     <td class='numero'>${item.numero}</td>
-    <td class='cantidadT'>${item.cantidadT}</td>
+    <td class='cantidadT'>${item.cantidad}</td>
     <td class='monto'>${item.monto}</td>
     <td class='fecha'>${item.fecha}</td>
     <td class='XML'><img src='/images/XML.png'></td>    
@@ -76,9 +85,9 @@ function renderListItem(listado, item) {
 // Función XML
 function renderXML(factura) {
     let cliente = factura.cliente;
-    let cantidadTotal = factura.cantidadT;
+    let cantidadTotal = factura.cantidad;
     let productosXML = factura.contiene.map(producto => {
-        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidad}</cantidad>\n\t</Producto>`;
+        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidadP}</cantidad>\n\t</Producto>`;
     }).join("\n");
 
     let contenido = `<Factura>\n\t<numero>${factura.numero}</numero>\n\t<cantidad>${cantidadTotal}</cantidad>\n\t<monto>${factura.monto}</monto>\n\t<fecha>${factura.fecha}</fecha>\n\t<Cliente>\n\t\t<cedula>${cliente.cedula}</cedula>\n\t\t<nombre>${cliente.nombre}</nombre>\n\t\t<correo>${cliente.correo}</correo>\n\t\t<telefono>${cliente.telefono}</telefono>\n\t</Cliente>\n\t<Productos>\n${productosXML}\n\t</Productos>\n</Factura>`;
@@ -93,7 +102,7 @@ function renderXML(factura) {
 
 function downloadXML(factura) {
     let cliente = factura.cliente;
-    let cantidadTotal = factura.cantidadT;
+    let cantidadTotal = factura.cantidad; // Usar la propiedad 'cantidad' de la factura
     let productosXML = factura.contiene.map(producto => {
         return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidad}</cantidad>\n\t</Producto>`;
     }).join("\n");
@@ -117,6 +126,7 @@ function downloadXML(factura) {
     // Liberar el objeto URL
     URL.revokeObjectURL(url);
 }
+
 
 function showXMLView() {
     const xml = document.querySelector(".xml");

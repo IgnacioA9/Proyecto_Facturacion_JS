@@ -110,19 +110,25 @@ function renderListItem(listado, item) {
 }
 
 function addFactura() {
-    // Obtener la fecha actual del sistema
     let fechaActual = new Date();
-    // Formatear la fecha actual en el formato deseado (por ejemplo, YYYY-MM-DD)
     let fechaFormateada = fechaActual.toISOString().split('T')[0];
-    // Asignar la fecha formateada al campo 'fecha' de la factura
     state.factura.fecha = fechaFormateada;
 
-    // Construir el objeto DTO
+    // Construye el objeto DTO correctamente, asegurándote de que los nombres de los atributos coincidan
+    let contieneArray = state.factura.contiene.map(item => {
+        return {
+            codigo: item.codigo,  // Verifica que aquí usas 'codigo' y no 'numeroprod'
+            cantidadproducto: item.cantidadP  // Asegúrate de usar 'cantidadproducto'
+        };
+    });
+
     let facturaClienteDTO = {
         factura: state.factura,
         cliente: state.factura.cliente,
-        contiene: state.factura.contiene
+        contiene: contieneArray
     };
+
+    console.log(JSON.stringify(facturaClienteDTO, null, 2)); // Imprime el objeto DTO para verificar
 
     let request = new Request(api + "/create", {
         method: 'POST',
@@ -141,6 +147,7 @@ function addFactura() {
     clearFactura();
     render_list();
 }
+
 
 
 function addCliente() {

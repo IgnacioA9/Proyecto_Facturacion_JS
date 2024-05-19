@@ -1,4 +1,8 @@
-package una.ac.cr.logic;
+package una.ac.cr.logic.clasesFacturas;
+
+import una.ac.cr.logic.Clientes;
+import una.ac.cr.logic.Facturas;
+import una.ac.cr.logic.clasesFacturas.ContieneDTO;
 
 import java.util.List;
 

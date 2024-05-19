@@ -1,17 +1,17 @@
 package una.ac.cr.presentation;
 
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import una.ac.cr.data.*;
 import una.ac.cr.logic.*;
+import una.ac.cr.logic.clasesFacturas.ContieneDTO;
+import una.ac.cr.logic.clasesFacturas.FacturaClienteDTO;
 import una.ac.cr.security.UserDetailsImp;
-import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,9 @@ public class facturas {
 
     @Autowired
     ClientesRepository clientesRepository;
+
+    @Autowired
+    ProductosRepository productosRepository;
 
     @Autowired
     ProveedorClientesRepository proveedorClientesRepository;
@@ -48,18 +51,37 @@ public class facturas {
      */
 
     @GetMapping("/cargar")
-    public Iterable<Facturas> read(@AuthenticationPrincipal UserDetailsImp user){
+    public Iterable<FacturaClienteDTO> read(@AuthenticationPrincipal UserDetailsImp user){
         Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
-        List<Facturas> lista = facturasRepository.facturasBuscarPorProveedor(user.getUsername());
-        //List<Facturas> lista = (List<Facturas>) facturasRepository.findAll();
-        for (Facturas factura:lista){
+        List<FacturaClienteDTO> lista = new ArrayList<>();
+        List<Facturas> f = facturasRepository.facturasBuscarPorProveedor(user.getUsername());
+        for (Facturas factura:f){
             factura.setAdquiereByNumero(null);
             factura.setContienesByNumero(null);
             factura.setTieneByNumero(null);
+
+            Clientes c = clienteFacturaRepository.seleccionaClientesPorFactura(factura.getNumero());
+            c.setAdquieresByNumeroid(null);
+            c.setPoseeByNumeroid(null);
+
+            FacturaClienteDTO aux = new FacturaClienteDTO();
+            aux.setFactura(factura);
+            aux.setCliente(c);
+            /*
+            List<ContieneDTO> contieneDTOList = new ArrayList<>();
+            for (Productos p : productosFacturaRepository.productosporfactura(factura.getNumero())){
+                ContieneDTO contieneDTOaux = new ContieneDTO();
+                contieneDTOaux.setCodigo(p.getCodigo());
+                contieneDTOaux.setCantidadproducto(productosFacturaRepository.findCantidadProductoByNumeroprod(p.getNumeroid()));
+                contieneDTOList.add(contieneDTOaux);
+            }
+            aux.setContiene(contieneDTOList);
+            */
+
+            lista.add(aux);
         }
         return lista;
     }
-
 
     @PostMapping("/create")
     public void create(@AuthenticationPrincipal UserDetailsImp user, @RequestBody FacturaClienteDTO facturaClienteDTO) {
@@ -95,21 +117,14 @@ public class facturas {
 
             clienteFacturaRepository.save(adquiere);
 
-            /*for (ContieneDTO contieneDTO : contieneDTOList) {
-                Contiene contiene = new Contiene();
-                Productos aux = proveedoresProductosRepository.searchProductoByProveedorAndCodigo(pr.getCedula(),contieneDTO.getNumeroprod());
-                contiene.setNumeroprod(aux.getNumeroid());
-                contiene.setNumerofac(F.getNumero());
-                contiene.setCantidadproducto(contieneDTO.getCantidadproducto());
-                productosFacturaRepository.save(contiene);
-            }*/
-
-
+            for (ContieneDTO contieneDTO : contieneDTOList) {
+                Productos aux = productosRepository.obtenerProducto(contieneDTO.getCodigo());
+                aux.setAlmacenaByNumeroid(null);
+                aux.setContienesByNumeroid(null);
+                productosFacturaRepository.createContiene(aux.getNumeroid(),F.getNumero(),contieneDTO.getCantidadproducto());
+            }
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
-
-
-
 }
