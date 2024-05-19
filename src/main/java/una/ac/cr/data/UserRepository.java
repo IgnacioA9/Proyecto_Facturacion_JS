@@ -1,32 +1,44 @@
 package una.ac.cr.data;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import una.ac.cr.logic.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import una.ac.cr.logic.Usuarios;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component("userRepository")
 public class UserRepository {
-    List<User> list;
 
-    public User findById(String id) throws Exception{
+    @Autowired
+    private UsuariosRepository usuariosRepository;
+
+    private List<User> list;
+    private BCryptPasswordEncoder encoder;
+
+    public UserRepository() {
+        list = new ArrayList<>();
+        encoder = new BCryptPasswordEncoder();
+        list.add(new User("jsanchez","{bcrypt}"+encoder.encode("1"),"ADMIN"));
+        list.add(new User("slee","{bcrypt}"+encoder.encode("1"),"PROVEE"));
+    }
+
+    public User findById(String id) throws Exception {
         User r = list.stream()
-                .filter( e-> e.getId().equals(id))
-                .findFirst().get();
+                .filter(e -> e.getId().equals(id))
+                .findFirst().orElseThrow(() -> new Exception("User not found"));
         return r.clone();
     }
 
-    public UserRepository() {
-        list = new ArrayList<User>();
-        var encoder = new BCryptPasswordEncoder();
-        list.add(new User("jsanchez","{bcrypt}"+encoder.encode("1"),"ADMIN"));
-        list.add(new User("slee","{bcrypt}"+encoder.encode("1"),"PROVEE"));
-        list.add(new User("402600261","{bcrypt}"+encoder.encode("777"),"PROVEE"));
+    public void addUser(String id, String password, String rol) {
+        list.add(new User(id, "{bcrypt}" + encoder.encode(password), rol));
     }
 
-    public void addUser(User user) {
-        list.add(user);
+    public void readUsuarios() {
+        for (Usuarios u : usuariosRepository.usuariosAll()) {
+            list.add(new User(u.getIdentificacion(), u.getContrasena(), u.getRol()));
+        }
     }
 }

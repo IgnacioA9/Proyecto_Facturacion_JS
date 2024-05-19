@@ -33,10 +33,7 @@ public class usuarios {
             // Si el usuario no existe, lo crea
             if (usuarioRead == null) {
                 service.usuarioscreate(usuarios);
-                u.setId(usuarios.getIdentificacion());
-                u.setPassword(usuarios.getContrasena());
-                u.setRol(usuarios.getRol());
-                userRepository.addUser(u);
+                userRepository.addUser(usuarios.getIdentificacion(),usuarios.getContrasena(),usuarios.getRol());
                 if ("PROVEE".equals(usuarios.getRol())) {
                     Proveedores proveedor = Proveedores.builder()
                             .cedula(usuarios.getIdentificacion())
