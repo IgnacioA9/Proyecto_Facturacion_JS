@@ -67,17 +67,19 @@ public class facturas {
             FacturaClienteDTO aux = new FacturaClienteDTO();
             aux.setFactura(factura);
             aux.setCliente(c);
-            /*
+
             List<ContieneDTO> contieneDTOList = new ArrayList<>();
-            for (Productos p : productosFacturaRepository.productosporfactura(factura.getNumero())){
+            List<Productos> productos = productosFacturaRepository.productosporfactura(factura.getNumero());
+            for (Productos p : productos) {
+                p.setAlmacenaByNumeroid(null);
+                p.setContienesByNumeroid(null);
+
                 ContieneDTO contieneDTOaux = new ContieneDTO();
                 contieneDTOaux.setCodigo(p.getCodigo());
                 contieneDTOaux.setCantidadproducto(productosFacturaRepository.findCantidadProductoByNumeroprod(p.getNumeroid()));
                 contieneDTOList.add(contieneDTOaux);
             }
             aux.setContiene(contieneDTOList);
-            */
-
             lista.add(aux);
         }
         return lista;

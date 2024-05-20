@@ -86,11 +86,11 @@ function renderListItem(listado, item) {
 }
 
 // Función XML
-function renderXML(factura) {
+/*function renderXML(factura) {
     let cliente = factura.cliente;
     let cantidadTotal = factura.cantidad;
     let productosXML = factura.contiene.map(producto => {
-        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidadP}</cantidad>\n\t</Producto>`;
+        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidadproducto}</cantidad>\n\t</Producto>`;
     }).join("\n");
 
     let contenido = `<Factura>\n\t<numero>${factura.numero}</numero>\n\t<cantidad>${cantidadTotal}</cantidad>\n\t<monto>${factura.monto}</monto>\n\t<fecha>${factura.fecha}</fecha>\n\t<Cliente>\n\t\t<cedula>${cliente.cedula}</cedula>\n\t\t<nombre>${cliente.nombre}</nombre>\n\t\t<correo>${cliente.correo}</correo>\n\t\t<telefono>${cliente.telefono}</telefono>\n\t</Cliente>\n\t<Productos>\n${productosXML}\n\t</Productos>\n</Factura>`;
@@ -101,13 +101,13 @@ function renderXML(factura) {
     preElement.textContent = contenido;
     // Mostrar la vista XML
     showXMLView();
-}
+}*/
 
 function downloadXML(factura) {
     let cliente = factura.cliente;
     let cantidadTotal = factura.cantidad; // Usar la propiedad 'cantidad' de la factura
     let productosXML = factura.contiene.map(producto => {
-        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidad}</cantidad>\n\t</Producto>`;
+        return `\t<Producto>\n\t\t<codigo>${producto.codigo}</codigo>\n\t\t<cantidad>${producto.cantidadproducto}</cantidad>\n\t</Producto>`;
     }).join("\n");
 
     let contenido = `<?xml version="1.0" encoding="UTF-8"?>\n<Factura>\n\t<numero>${factura.numero}</numero>\n\t<cantidad>${cantidadTotal}</cantidad>\n\t<monto>${factura.monto}</monto>\n\t<fecha>${factura.fecha}</fecha>\n\t<Cliente>\n\t\t<cedula>${cliente.cedula}</cedula>\n\t\t<nombre>${cliente.nombre}</nombre>\n\t\t<correo>${cliente.correo}</correo>\n\t\t<telefono>${cliente.telefono}</telefono>\n\t</Cliente>\n\t<Productos>\n${productosXML}\n\t</Productos>\n</Factura>`;
@@ -129,7 +129,6 @@ function downloadXML(factura) {
     // Liberar el objeto URL
     URL.revokeObjectURL(url);
 }
-
 
 function showXMLView() {
     const xml = document.querySelector(".xml");
