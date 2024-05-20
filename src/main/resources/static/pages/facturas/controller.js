@@ -79,13 +79,61 @@ function renderListItem(listado, item) {
         downloadXML(item);  //El profe menciono que este metodo estaba mejor
     });
     tr.querySelector(".PDF").addEventListener("click", function () {
-        console.log("GENERANDO PDF")
+        downloadPDF(item);
     });
     // Agregar el <tr> al listado
     listado.appendChild(tr);
 }
 
 // Función XML
+function downloadPDF(factura) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Añadir el título
+    doc.setFontSize(18);
+    doc.text('Impresión de la Factura', 105, 10, null, null, 'center');
+
+    // Añadir detalles de la factura
+    doc.setFontSize(12);
+    doc.text(`Factura Nº: ${factura.numero}`, 10, 20);
+    doc.text(`Fecha: ${factura.fecha}`, 10, 30);
+    doc.text(`Cliente: ${factura.cliente.nombre}`, 10, 40);
+    doc.text(`Cédula: ${factura.cliente.cedula}`, 10, 50);
+    doc.text(`Correo: ${factura.cliente.correo}`, 10, 60);
+    doc.text(`Teléfono: ${factura.cliente.telefono}`, 10, 70);
+    doc.text(`Monto Total: ${factura.monto}`, 10, 80);
+
+    // Añadir encabezado de la tabla
+    doc.setFontSize(14);
+    doc.text('Productos', 10, 90);
+
+    doc.setFontSize(12);
+    doc.text('Código', 10, 100);
+    doc.text('Cantidad', 60, 100);
+
+    // Añadir productos como filas de la tabla
+    let y = 110;
+    factura.contiene.forEach(producto => {
+        doc.text(producto.codigo, 10, y);
+        doc.text(producto.cantidadproducto.toString(), 60, y);
+        y += 10;
+    });
+
+    // Pie de página
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(10);
+        doc.text(`Página ${i} de ${pageCount}`, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, null, null, 'right');
+        doc.text('Facturación Electrónica', 10, doc.internal.pageSize.height - 10);
+    }
+
+    // Guardar el PDF
+    doc.save(`Factura_${factura.numero}.pdf`);
+}
+
+
 /*function renderXML(factura) {
     let cliente = factura.cliente;
     let cantidadTotal = factura.cantidad;
