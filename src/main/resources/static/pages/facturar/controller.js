@@ -48,6 +48,7 @@ function setupEventListeners() {
 
     fetchClientes();
     fetchProductos();
+    loadUserProveedor();
 }
 
 // Si se intenta buscar un producto o cliente y las variables no están cargadas se llamarán estos métodos
@@ -69,6 +70,17 @@ function fetchProductos() {
         if (!response.ok) { errorMessage(response.status); return; }
         const data = await response.json();
         state.productos = data;
+    })();
+}
+
+function loadUserProveedor(){
+    const request = new Request(backend+"/proveedores/cargar/proveedor", {method: 'GET', headers: { }});
+    (async ()=>{
+        const response = await fetch(request);
+        if (!response.ok) {errorMessage(response.status);return;}
+        const data = await response.json();
+        console.log(data); // Verificar la respuesta
+        state.proveedorU = data;
     })();
 }
 

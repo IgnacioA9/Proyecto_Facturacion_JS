@@ -49,22 +49,10 @@ async function menu() {
         document.location = "/pages/login/view.html";
         throw new Error("Usuario no autorizado");
     }*/
-    if(loginstate.logged){
-        loadUserProveedor();
-    }
     renderMenu();
 }
 
-function loadUserProveedor(){
-    const request = new Request(backend+"/proveedores/cargar/proveedor", {method: 'GET', headers: { }});
-    (async ()=>{
-        const response = await fetch(request);
-        if (!response.ok) {errorMessage(response.status);return;}
-        const data = await response.json();
-        console.log(data); // Verificar la respuesta
-        state.proveedorU = data;
-    })();
-}
+
 
 function renderMenu() {
     let html = '';
