@@ -30,7 +30,7 @@ public interface AllRepository extends CrudRepository<Contiene, String> {
     @Query("select c from Contiene c where c.numeroprod=?1 and c.numerofac=?2")
     Contiene readContiene(int numeropro, int numerofac);
 
-    @Query("select c.cantidadproducto from Contiene c where c.numeroprod=?1")
-    int findCantidadProductoByNumeroprod(int numeroprod);
+    @Query("select c.cantidadproducto from Contiene c where c.numeroprod=?1 and c.numerofac=?2")
+    int findCantidadProductoByNumeroprodAndNumerofac(int numeroprod, int numerofac);
 }
 

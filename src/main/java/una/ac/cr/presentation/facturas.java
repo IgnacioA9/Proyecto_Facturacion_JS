@@ -76,7 +76,7 @@ public class facturas {
 
                 ContieneDTO contieneDTOaux = new ContieneDTO();
                 contieneDTOaux.setCodigo(p.getCodigo());
-                contieneDTOaux.setCantidadproducto(productosFacturaRepository.findCantidadProductoByNumeroprod(p.getNumeroid()));
+                contieneDTOaux.setCantidadproducto(productosFacturaRepository.findCantidadProductoByNumeroprodAndNumerofac(p.getNumeroid(),factura.getNumero()));
                 contieneDTOList.add(contieneDTOaux);
             }
             aux.setContiene(contieneDTOList);
