@@ -28,7 +28,7 @@ async function unloaded(event) {
 
 function setupEventListeners() {
     const proveedorSpan = document.getElementById("proveedor");
-    proveedorSpan.textContent = " " + loginstate.user.id;
+    proveedorSpan.textContent = " " + loginstate.user.identificacion;
 
     const clienteSpan = document.getElementById("clienteFactura");
     clienteSpan.textContent = state.factura.cliente.nombre;
@@ -81,6 +81,7 @@ function loadUserProveedor(){
         const data = await response.json();
         console.log(data); // Verificar la respuesta
         state.proveedorU = data;
+        console.log(state.proveedorU);
     })();
 }
 

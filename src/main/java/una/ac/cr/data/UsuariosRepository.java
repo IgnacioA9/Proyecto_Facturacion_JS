@@ -19,4 +19,6 @@ public interface UsuariosRepository extends CrudRepository<Usuarios, String> {
     @Query("select u from Usuarios u where u.identificacion=?1")
     Usuarios findUsuariosByIdentificacion(String identificacion);
 
+    @Query("select u.rol from Usuarios u where u.identificacion=?1")
+    String findRolByIdentificacion(String identificacion);
 }

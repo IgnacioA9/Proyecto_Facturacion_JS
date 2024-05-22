@@ -21,7 +21,7 @@ var state = {
 
     proveedorU: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
 
-    administrador: {nombre: "jsanchez"},
+    administrador: {nombre: ""},
 
     facturas: [],
     factura: { numero: "", cantidad: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
@@ -51,8 +51,6 @@ async function menu() {
     }*/
     renderMenu();
 }
-
-
 
 function renderMenu() {
     let html = '';
@@ -97,7 +95,7 @@ function renderMenu() {
                         <a id="facturaslink" href="#">Facturas</a>
                     </div>
                     <div class="dropdown">
-                        <p>&nbsp;&nbsp;${loginstate.user.id}</p>
+                        <p>${loginstate.user.identificacion}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
@@ -163,11 +161,11 @@ function ask(event) {
 
 async function login() {
     const user = {
-        id: document.getElementById("id").value,
-        password: document.getElementById("password").value
+        identificacion: document.getElementById("id").value,
+        contrasena: document.getElementById("password").value
     };
 
-    if (!user.id || !user.password) {
+    if (!user.identificacion || !user.contrasena) {
         errorMessage('Please fill out both fields');
         return;
     }
@@ -187,7 +185,7 @@ async function login() {
 
         const data = await response.json();
         loginstate.logged = true;
-        loginstate.user.id = user.id;
+        loginstate.user.id = user.identificacion;
         loginstate.user.rol = data.rol;
 
         switch (loginstate.user.rol) {

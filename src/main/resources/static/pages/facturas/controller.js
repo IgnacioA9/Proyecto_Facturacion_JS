@@ -57,7 +57,7 @@ function fetchAndList(){
 function render_list() {
     // Asingar el nombre del proveedor a la tabla
     const proveedorSpan = document.getElementById("proveedor");
-    proveedorSpan.textContent = " " + loginstate.user.id;
+    proveedorSpan.textContent = " " + loginstate.user.identificacion;
     var listado = document.querySelector('#listaFacturas tbody');
     listado.innerHTML = "";
     state.facturas.forEach(item => renderListItem(listado, item));

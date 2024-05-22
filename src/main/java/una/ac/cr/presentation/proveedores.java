@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import una.ac.cr.data.AdministradoresRepository;
 import una.ac.cr.data.ProductosRepository;
 import una.ac.cr.data.ProveedoresProductosRepository;
 import una.ac.cr.data.ProveedoresRepository;
@@ -24,6 +25,9 @@ public class proveedores {
 
     @Autowired
     ProveedoresRepository proveedoresRepository;
+
+    @Autowired
+    AdministradoresRepository administradoresRepository;
 
     /*Metodos requeridos
      *-Mostrar todos los proveedores
@@ -105,6 +109,18 @@ public class proveedores {
                 pr.setCorreo(proveedor.getCorreo());
                 pr.setTelefono(proveedor.getTelefono());
                 proveedoresRepository.save(pr);
+            }
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+    }
+    @PostMapping("/editAdmin")
+    public void editAdmin(@AuthenticationPrincipal UserDetailsImp user, @RequestBody Administradores admin) {
+        try {
+            Administradores ad = administradoresRepository.administradoresRead(user.getUsername());
+            if (ad != null) {
+                ad.setNombre(admin.getNombre());
+                administradoresRepository.save(ad);
             }
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);

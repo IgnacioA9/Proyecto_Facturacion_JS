@@ -121,6 +121,25 @@ function loadProveedorU() {
 }
 
 function editarAdministrador() {
-    state.administrador.nombre = document.getElementById("nombreAdm").value;
-    renderEdit();
+    loadAdmin();
+    let request = new Request(api +`/editAdmin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state.administrador)
+    });
+    (async () => {
+        const response = await fetch(request);
+        if (!response.ok) {
+            errorMessage(response.status);
+            return;
+        }
+        renderEdit();
+    })();
 }
+function loadAdmin() {
+    state.administrador={
+        nombre:document.getElementById("nombreAdm").value,
+    };
+    console.log(state.proveedorU);
+}
+
