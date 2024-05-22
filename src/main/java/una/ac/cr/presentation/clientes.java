@@ -104,9 +104,9 @@ public class clientes {
 
     @Transactional
     @DeleteMapping("/delete/{codigo}")
-    public void delete(@PathVariable String codigo) {
+    public void delete(@AuthenticationPrincipal UserDetailsImp user, @PathVariable String codigo) {
         try {
-            Clientes c = clientesRepository.clientesread(codigo);
+            Clientes c = proveedorClientesRepository.searchByProveedorAndCedula(user.getUsername(),codigo);
             if (c != null) {
                 // Eliminar las relaciones asociadas al producto
                 proveedorClientesRepository.deleteByNumeroclien(c.getNumeroid());

@@ -109,9 +109,9 @@ public class productos {
 
     @Transactional
     @DeleteMapping("/delete/{codigo}")
-    public void delete(@PathVariable String codigo) {
+    public void delete(@AuthenticationPrincipal UserDetailsImp user,@PathVariable String codigo) {
         try {
-            Productos p = productosRepository.obtenerProducto(codigo);
+            Productos p = proveedoresProductosRepository.searchProductoByProveedorAndCodigo(user.getUsername(),codigo);
             if (p != null) {
                 // Eliminar las relaciones asociadas al producto
                 proveedoresProductosRepository.deleteByNumeroprod(p.getNumeroid());
