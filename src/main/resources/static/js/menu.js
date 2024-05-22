@@ -114,7 +114,7 @@ function renderMenu() {
                         <a id="solicitudeslink" href="#">Solicitudes</a>
                     </div>
                     <div class="dropdown">
-                        <p>&nbsp;&nbsp;${loginstate.user.id}</p>
+                        <p>${loginstate.user.identificacion}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
