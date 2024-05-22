@@ -204,7 +204,6 @@ function addProductos() {
         console.log(`Factura actualizada: ${JSON.stringify(state.factura)}`);
         document.getElementById("productoFacturas").value = "";
         render_list();
-
     } else {
         console.log(`Producto con código ${codigo} no encontrado.`);
         window.alert("Producto no encontrado.");
@@ -215,7 +214,7 @@ function removeFromFactura(codigo) {
     const index = state.factura.contiene.findIndex(item => item.codigo === codigo);
 
     if (index !== -1) {
-        const cantidad = state.factura.contiene[index].cantidadp;
+        const cantidad = state.factura.contiene[index].cantidadP;
         const producto = state.productos.find(prod => prod.codigo === codigo);
 
         // Si la cantidad es mayor a 1, reducir la cantidad en 1
