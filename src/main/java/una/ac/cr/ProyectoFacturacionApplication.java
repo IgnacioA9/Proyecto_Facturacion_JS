@@ -16,14 +16,8 @@ import una.ac.cr.logic.Usuarios;
 
 @SpringBootApplication
 public class ProyectoFacturacionApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ProyectoFacturacionApplication.class, args);
-        Usuarios usuario = Usuarios.builder()
-                .identificacion("")
-                .contrasena("")
-                .rol("")
-                .build();
         Proveedores proveedores = Proveedores.builder()
                 .cedula("")
                 .nombre("")
@@ -33,25 +27,6 @@ public class ProyectoFacturacionApplication {
                 .build();
 
     }
-
-    /*@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        var chain = http
-                .authorizeHttpRequests(customizer -> customizer
-                        .requestMatchers("/api/usuarios").permitAll()
-                        .requestMatchers("/api/login/login").permitAll()
-                        .requestMatchers("/api/login/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/**").hasAnyAuthority("ADMIN", "PROVEE")
-                        .requestMatchers("/**").permitAll()
-                )
-                .exceptionHandling(customizer -> customizer
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .csrf().disable()
-                .build();
-        return chain;
-    }*/
-
 
     @Bean("securityFilterChain")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -1,6 +1,9 @@
 const backend = "http://localhost:8080/api";
 const api_login = `${backend}/login`;
 
+// Initialize menu on page load
+document.addEventListener('DOMContentLoaded', menu);
+
 const loginstate = {
     logged: false,
     user: { id: "", rol: "" },
@@ -16,18 +19,12 @@ var state = {
     clientes: [],
     cliente: {cedula: "", nombre: "", correo: "", telefono: ""},
 
-    proveedorU: {cedula: "slee", nombre: "Proveedor Slee", correo: "Slee@gmai.com", telefono: "999", estado: "1"},
-    administrador: {nombre: "jsanchez"},
+    proveedorU: {cedula: "", nombre: "", correo: "", telefono: "", estado: ""},
 
-    facturas: [
-        { numero: "001", cantidadT: "2", monto: "30.00", fecha: "2023-05-15",
-            contiene: [{ codigo: "001", cantidad: 5 }, { codigo: "002", cantidad: 10 }], cliente: { cedula: "1234567890", nombre: "Juan Perez", correo: "juan.perez@example.com", telefono: "555-1234" }
-        },
-        {numero: "002", cantidadT: "1", monto: "20.00", fecha: "2023-05-16",
-            contiene: [{ codigo: "003", cantidad: 7 }], cliente: { cedula: "0987654321", nombre: "Maria Lopez", correo: "maria.lopez@example.com", telefono: "555-5678" }
-        }
-    ],
-    factura: { numero: "", cantidadT: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
+    administrador: {nombre: ""},
+
+    facturas: [],
+    factura: { numero: "", cantidad: "", monto: "", fecha: "", contiene: [], cliente: { cedula: "", nombre: "", correo: "", telefono: "" }
     }
 };
 
@@ -36,14 +33,8 @@ async function checkUser() {
         const request = new Request(`${api_login}/current-user`, { method: 'GET' });
         const response = await fetch(request);
         if (response.ok) {
-            const user = await response.json();
-            if (user.estado === 'aceptado') {
-                loginstate.logged = true;
-                loginstate.user = user;
-            } else {
-                loginstate.logged = false;
-                loginstate.user = { id: "", rol: "", estado: "" };
-            }
+            loginstate.logged = true;
+            loginstate.user = await response.json();
         } else {
             loginstate.logged = false;
         }
@@ -51,7 +42,6 @@ async function checkUser() {
         console.error('Error checking user:', error);
     }
 }
-
 
 async function menu() {
     await checkUser();
@@ -105,7 +95,7 @@ function renderMenu() {
                         <a id="facturaslink" href="#">Facturas</a>
                     </div>
                     <div class="dropdown">
-                        <p>&nbsp;&nbsp;${loginstate.user.id}</p>
+                        <p>${loginstate.user.identificacion}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
@@ -124,7 +114,7 @@ function renderMenu() {
                         <a id="solicitudeslink" href="#">Solicitudes</a>
                     </div>
                     <div class="dropdown">
-                        <p>&nbsp;&nbsp;${loginstate.user.id}</p>
+                        <p>${loginstate.user.identificacion}</p>
                         <div class="dropdown-content">
                             <a id="profilelink" href="#">Perfil</a>
                             <a id="logoutlink" href="#">Logout</a>
@@ -171,12 +161,12 @@ function ask(event) {
 
 async function login() {
     const user = {
-        id: document.getElementById("id").value,
-        password: document.getElementById("password").value
+        identificacion: document.getElementById("id").value,
+        contrasena: document.getElementById("password").value
     };
 
-    if (!user.id || !user.password) {
-        errorMessage('Por favor, llene ambos campos');
+    if (!user.identificacion || !user.contrasena) {
+        errorMessage('Please fill out both fields');
         return;
     }
 
@@ -194,15 +184,9 @@ async function login() {
         }
 
         const data = await response.json();
-        if (data.estado !== 'aceptado') {
-            errorMessage('Usuario no aceptado');
-            return;
-        }
-
         loginstate.logged = true;
-        loginstate.user.id = user.id;
+        loginstate.user.id = user.identificacion;
         loginstate.user.rol = data.rol;
-        loginstate.user.estado = data.estado;
 
         switch (loginstate.user.rol) {
             case "ADMIN":
@@ -251,6 +235,3 @@ function errorMessage(status) {
     }
     window.alert(error);
 }
-
-// Initialize menu on page load
-document.addEventListener('DOMContentLoaded', menu);

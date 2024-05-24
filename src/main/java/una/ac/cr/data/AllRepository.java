@@ -18,6 +18,10 @@ public interface AllRepository extends CrudRepository<Contiene, String> {
             "where f.numero=c.numerofac and c.numeroprod=p.numeroid and f.numero=?1")
     List<Productos> productosporfactura(int numero);
 
+    @Query("select c from Facturas f, Contiene c, Productos p " +
+            "where f.numero=c.numerofac and c.numeroprod=p.numeroid and f.numero=?1")
+    List<Contiene> contineporfactura(int numero);
+
     @Modifying
     @Transactional
     @Query(value = "INSERT INTO Contiene (numeroprod, numerofac, cantidadproducto) VALUES (:numeroprod, :numerofac, :cantidadproducto)", nativeQuery = true)
@@ -25,4 +29,8 @@ public interface AllRepository extends CrudRepository<Contiene, String> {
 
     @Query("select c from Contiene c where c.numeroprod=?1 and c.numerofac=?2")
     Contiene readContiene(int numeropro, int numerofac);
+
+    @Query("select c.cantidadproducto from Contiene c where c.numeroprod=?1 and c.numerofac=?2")
+    int findCantidadProductoByNumeroprodAndNumerofac(int numeroprod, int numerofac);
 }
+

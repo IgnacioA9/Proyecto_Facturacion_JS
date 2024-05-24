@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import una.ac.cr.data.AdministradoresRepository;
 import una.ac.cr.data.ProductosRepository;
 import una.ac.cr.data.ProveedoresProductosRepository;
 import una.ac.cr.data.ProveedoresRepository;
@@ -25,6 +26,9 @@ public class proveedores {
     @Autowired
     ProveedoresRepository proveedoresRepository;
 
+    @Autowired
+    AdministradoresRepository administradoresRepository;
+
     /*Metodos requeridos
      *-Mostrar todos los proveedores
      *-Aceptar proveedor
@@ -32,6 +36,15 @@ public class proveedores {
      *-Rechazar proveedor
      *-Editar proveedor
      */
+
+    @GetMapping("/cargar/proveedor")
+    public Proveedores readProveedorA(@AuthenticationPrincipal UserDetailsImp user){
+        Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+        pr.setAlmacenasByNumeroid(null);
+        pr.setPoseesByNumeroid(null);
+        pr.setTienesByNumeroid(null);
+        return pr;
+    }
 
     @GetMapping("/cargar/acepatdos")
     public Iterable<Proveedores> read(){
@@ -87,15 +100,27 @@ public class proveedores {
         }
     }
 
-    @PostMapping()
-    public void edit(@RequestBody Proveedores proveedor) {
+    @PostMapping("/edit")
+    public void edit(@AuthenticationPrincipal UserDetailsImp user, @RequestBody Proveedores proveedor) {
         try {
-            Proveedores proveedoresread = service.proveedoresread(proveedor.getCedula());
-            if (proveedoresread != null) {
-                proveedoresread.setNombre(proveedor.getNombre());
-                proveedoresread.setCorreo(proveedor.getCorreo());
-                proveedoresread.setTelefono(proveedor.getTelefono());
-                service.proveedorescreate(proveedoresread);
+            Proveedores pr = proveedoresRepository.findProveedoresByCedula(user.getUsername());
+            if (pr != null) {
+                pr.setNombre(proveedor.getNombre());
+                pr.setCorreo(proveedor.getCorreo());
+                pr.setTelefono(proveedor.getTelefono());
+                proveedoresRepository.save(pr);
+            }
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+    }
+    @PostMapping("/editAdmin")
+    public void editAdmin(@AuthenticationPrincipal UserDetailsImp user, @RequestBody Administradores admin) {
+        try {
+            Administradores ad = administradoresRepository.administradoresRead(user.getUsername());
+            if (ad != null) {
+                ad.setNombre(admin.getNombre());
+                administradoresRepository.save(ad);
             }
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);

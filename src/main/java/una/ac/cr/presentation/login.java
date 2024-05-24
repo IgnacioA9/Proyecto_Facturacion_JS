@@ -2,6 +2,9 @@ package una.ac.cr.presentation;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import una.ac.cr.data.ProveedoresRepository;
+import una.ac.cr.data.UsuariosRepository;
+import una.ac.cr.logic.Proveedores;
 import una.ac.cr.logic.User;
 import una.ac.cr.logic.Usuarios;
 import una.ac.cr.logic.Service;
@@ -13,22 +16,44 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/*@RestController
+import java.util.Objects;
+
+@RestController
 @RequestMapping("/api/login")
 public class login {
     @Autowired
     private Service service;
 
+    @Autowired
+    UsuariosRepository usuariosRepository;
+
+    @Autowired
+    ProveedoresRepository proveedoresRepository;
+
     @PostMapping("/login")
-    public Usuarios login(@RequestBody Usuarios form,  HttpServletRequest request) {
+    public Usuarios login(@RequestBody Usuarios form, HttpServletRequest request) {
+        System.out.println("Identificación: " + form.getIdentificacion());
+        System.out.println("Contraseña: " + form.getContrasena());
+        String rolU;
         try {
+            rolU = usuariosRepository.findRolByIdentificacion(form.getIdentificacion());
+            Proveedores proveedor = proveedoresRepository.findProveedoresByCedula(form.getIdentificacion());
+
+            if (Objects.equals(rolU, "PROVEE")) {
+                if (proveedor == null || !proveedor.getEstado()) {
+                    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Proveedor no autorizado");
+                }
+            }
             request.login(form.getIdentificacion(), form.getContrasena());
         } catch (ServletException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Login failed");
         }
         Authentication auth = (Authentication) request.getUserPrincipal();
         Usuarios user = ((UserDetailsImp) auth.getPrincipal()).getUser();
-        return Usuarios.builder().identificacion(user.getIdentificacion()).contrasena(null).rol(user.getRol()).build();
+        user.setIdentificacion(form.getIdentificacion());
+        user.setContrasena(null);
+        user.setRol(rolU);
+        return user;
     }
 
     @PostMapping("/logout")
@@ -41,35 +66,10 @@ public class login {
 
     @GetMapping("/current-user")
     public Usuarios getCurrentUser(@AuthenticationPrincipal UserDetailsImp user) {
-        return Usuarios.builder().identificacion(user.getUsername()).contrasena(null).rol(user.getUser().getRol()).build();
-    }
-}*/
-
-@RestController
-@RequestMapping("/api/login")
-public class login {
-    @PostMapping("/login")
-    public User login(@RequestBody User form,  HttpServletRequest request) {
-        try {
-            request.login(form.getId(), form.getPassword());
-        } catch (ServletException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        Authentication auth = (Authentication) request.getUserPrincipal();
-        User user = ((UserDetailsImp) auth.getPrincipal()).getUser();
-        return new User(user.getId(), null, user.getRol());
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request) {
-        try {
-            request.logout();
-        } catch (ServletException e) {
-        }
-    }
-
-    @GetMapping("/current-user")
-    public User getCurrentUser(@AuthenticationPrincipal UserDetailsImp user) {
-        return new User(user.getUser().getId(), null, user.getUser().getRol());
+        Usuarios users = new Usuarios();
+        users.setIdentificacion(user.getUsername());
+        users.setContrasena(null);
+        users.setRol(user.getUser().getRol());
+        return users;
     }
 }

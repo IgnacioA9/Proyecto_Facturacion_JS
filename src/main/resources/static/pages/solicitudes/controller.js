@@ -57,7 +57,7 @@ function renderListItem(listado, item) {
         <td class='cedula'>${item.cedula}</td>
         <td class='nombre'>${item.nombre}</td>
         <td class='estado'>Rechazado</td></td>
-        <td class='rechazar'><img src='/images/delete.png'></td>    `;
+        <td class='rechazar'><img src='/images/accept.png'></td>    `;
         tr.querySelector(".rechazar").addEventListener("click", function () {
             aceptar(item, tr);
         });

@@ -27,6 +27,10 @@ async function unloaded(event){
 }
 
 function setupEventListeners() {
+
+    // Asingar el nombre del proveedor a la tabla
+    const proveedorSpan = document.getElementById("proveedor");
+    proveedorSpan.textContent = " " + loginstate.user.identificacion;
     // Obtener referencia al botón btnCreate y al popup
     const btnCreate = document.getElementById("btnCreate");
     const popup = document.querySelector(".popup");
@@ -152,25 +156,17 @@ function remove(id) {
     })();
 }
 
-function search(id){
-    const request = new Request(api+`/search/${id}`, {method: 'GET', headers: {}});
-    (async ()=>{
-        try {
-            const response = await fetch(request);
-            if (!response.ok) {
-                errorMessage(response.status);
-                return;
-            }
-            const data = await response.json();
-            console.log(data); // Verificar la respuesta
-            state.clientes = data;
-            render_list();
-            console.log(state.clientes);
-        } catch (error) {
-            console.error('Error al buscar el producto:', error);
-            errorMessage('Error al buscar el producto');
-        }
-    })();
+function search(searchTerm) {
+    var filteredClients = state.clientes.filter(cliente =>
+        cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    render_filtered_list(filteredClients);
+}
+
+function render_filtered_list(filteredClients) {
+    var listado = document.querySelector('#listaClientes tbody');
+    listado.innerHTML = "";
+    filteredClients.forEach(item => renderListItem(listado, item));
 }
 
 //Validaciones

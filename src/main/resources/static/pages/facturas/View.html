@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/Create.css">
     <script src="/js/menu.js"> </script>
     <script src="controller.js"> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 </head>
 <body class="body-create">
 <header class="header" id="menu"></header>
@@ -20,22 +21,24 @@
     <br>
 </div>
 
-
 <div id="listaFacturas" class="wrapper-facturas">
-    <table class="content-table">
-        <thead>
-        <tr>
-            <th>Numero de Factura</th>
-            <th>Cantidad de Productos</th>
-            <th>Monto Total</th>
-            <th>Fecha</th>
-            <th>XML</th>
-            <th>PDF</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <h3>Facturas de:<span id="proveedor"></span></h3>
+    <div class="table-container">
+        <table class="content-table">
+            <thead>
+            <tr>
+                <th>Numero de Factura</th>
+                <th>Cantidad de Productos</th>
+                <th>Monto Total</th>
+                <th>Fecha</th>
+                <th>XML</th>
+                <th>PDF</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 </body>
 </html>
